@@ -107,7 +107,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   selectFolder(AssetPathEntity? folder) async {
     if (folder == null) return;
     if (selectedFolder.value == folder) return;
-    assets.value = const [];
+    assets.value = null;
     selectedFolder.value = folder;
     await fetchMoreAsset();
   }
