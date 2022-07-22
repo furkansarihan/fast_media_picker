@@ -28,15 +28,16 @@ class EmptyWidget extends StatelessWidget {
                       Icon(
                         CupertinoIcons.photo,
                         size: 64,
-                        color: context.read<MediaPickerCubit>().foregrounColor,
+                        color: context.read<MediaPickerCubit>().foregroundColor,
                       ),
                       const SizedBox(height: 8),
                       Text('No Media',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color:
-                                context.read<MediaPickerCubit>().foregrounColor,
+                            color: context
+                                .read<MediaPickerCubit>()
+                                .foregroundColor,
                           )),
                     ],
                   ),

@@ -66,7 +66,7 @@ class FolderSelectListTile extends StatelessWidget {
           folder.name,
           style: TextStyle(
             fontSize: 14,
-            color: context.read<MediaPickerCubit>().foregrounColor,
+            color: context.read<MediaPickerCubit>().foregroundColor,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -78,7 +78,7 @@ class FolderSelectListTile extends StatelessWidget {
         trailing: Text(
           assetCount?.toString() ?? '',
           style: TextStyle(
-            color: context.read<MediaPickerCubit>().foregrounColor,
+            color: context.read<MediaPickerCubit>().foregroundColor,
           ),
         ),
       ),

@@ -46,11 +46,11 @@ class DropdownButton extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              // TODO: translate
+              // TODO: custom text
               folder?.name ?? 'recents',
               style: TextStyle(
                 fontSize: 16,
-                color: context.read<MediaPickerCubit>().foregrounColor,
+                color: context.read<MediaPickerCubit>().foregroundColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -63,7 +63,7 @@ class DropdownButton extends StatelessWidget {
                       ? CupertinoIcons.chevron_up
                       : CupertinoIcons.chevron_down,
                   size: 16,
-                  color: context.read<MediaPickerCubit>().foregrounColor,
+                  color: context.read<MediaPickerCubit>().foregroundColor,
                 );
               },
             ),

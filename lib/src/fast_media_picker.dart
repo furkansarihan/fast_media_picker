@@ -1,16 +1,19 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapping_sheet/snapping_sheet.dart';
 
 import 'cubit/media_picker_cubit.dart';
-import 'widgets/widgets.dart';
+import 'media_picker.dart';
+import 'widgets/src/folders_dropdown_row.dart';
 
 class FastMediaPicker extends StatelessWidget {
   const FastMediaPicker({
     Key? key,
     this.scrollController,
     required this.backgroundColor,
-    required this.foregrounColor,
+    required this.foregroundColor,
     this.maxSelection = 1,
     required this.onPicked,
     this.emptyWidget,
@@ -18,7 +21,7 @@ class FastMediaPicker extends StatelessWidget {
   }) : super(key: key);
   final ScrollController? scrollController;
   final Color backgroundColor;
-  final Color foregrounColor;
+  final Color foregroundColor;
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
@@ -26,52 +29,109 @@ class FastMediaPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Wrap with theme provider to support theme changes
+    ScrollController scrollController =
+        this.scrollController ?? ScrollController();
     return BlocProvider<MediaPickerCubit>(
-      create: (context) => MediaPickerCubit(
-        context,
-        scrollController ?? ScrollController(),
-        backgroundColor,
-        foregrounColor,
-        maxSelection,
-        emptyWidget,
-        loadingWidget,
-        onPicked,
-      ),
-      child: Material(
-        color: backgroundColor,
+        create: (context) => MediaPickerCubit(
+              context,
+              scrollController,
+              backgroundColor,
+              foregroundColor,
+              maxSelection,
+              emptyWidget,
+              loadingWidget,
+              onPicked,
+            ),
+        child: Sheet(
+          scrollController: scrollController,
+          child: MediaPicker(
+            scrollController: scrollController,
+            backgroundColor: backgroundColor,
+            foregroundColor: foregroundColor,
+            onPicked: onPicked,
+            maxSelection: maxSelection,
+            emptyWidget: emptyWidget,
+            loadingWidget: loadingWidget,
+          ),
+        ));
+  }
+}
+
+class Sheet extends StatelessWidget {
+  const Sheet({Key? key, required this.child, required this.scrollController})
+      : super(key: key);
+  final Widget child;
+  final ScrollController scrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    const SnappingPosition bottom = SnappingPosition.factor(
+      positionFactor: 0,
+      grabbingContentOffset: GrabbingContentOffset.bottom,
+    );
+    const SnappingPosition middle = SnappingPosition.factor(
+      positionFactor: 0.75,
+      grabbingContentOffset: GrabbingContentOffset.middle,
+    );
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    SnappingPosition top = SnappingPosition.pixels(
+      positionPixels:
+          mediaQueryData.size.height - mediaQueryData.padding.top * 4,
+      grabbingContentOffset: GrabbingContentOffset.top,
+    );
+    // TODO: background color based on sheet drag
+    // TODO: fix scroll jump when sheet is dragged from grabbing widget
+    return SnappingSheet(
+      lockOverflowDrag: false,
+      onSnapCompleted: (_, snappingPosition) {
+        if (snappingPosition == bottom) {
+          Navigator.of(context).maybePop();
+        }
+      },
+      initialSnappingPosition: middle,
+      snappingPositions: [
+        bottom,
+        middle,
+        top,
+      ],
+      grabbingHeight: 60,
+      grabbing: Container(
+        decoration: BoxDecoration(
+          color: context.watch<MediaPickerCubit>().backgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
         child: Column(
           children: [
-            const FoldersDropdownRow(),
-            Divider(
-              height: 0,
-              thickness: 1,
-              color: foregrounColor.withOpacity(0.025),
-            ),
-            const LimitedPermissionRow(),
-            Expanded(
-              child: Stack(
-                children: const [
-                  MediaPickerBody(),
-                  Positioned(
-                    top: -1,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: FolderListAnimator(),
+            SizedBox(
+              height: 24,
+              child: Center(
+                child: Container(
+                  height: 4,
+                  width: 38,
+                  decoration: BoxDecoration(
+                    color: context
+                        .watch<MediaPickerCubit>()
+                        .foregroundColor
+                        .withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(6),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: DoneButtonAnimator(),
-                  ),
-                  PermissionLayer(),
-                ],
+                ),
               ),
             ),
+            const SizedBox(height: 36, child: FoldersDropdownRow()),
           ],
         ),
+      ),
+      sheetBelow: SnappingSheetContent(
+        draggable: true,
+        sizeBehavior: SheetSizeStatic(
+          size: MediaQuery.of(context).size.height * 0.4,
+        ),
+        childScrollController: scrollController,
+        child: child,
       ),
     );
   }

@@ -30,7 +30,7 @@ class LimitedPermissionRow extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: context
                         .read<MediaPickerCubit>()
-                        .foregrounColor
+                        .foregroundColor
                         .withOpacity(0.5),
                   ),
             ),
@@ -38,7 +38,7 @@ class LimitedPermissionRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: context
                           .read<MediaPickerCubit>()
-                          .foregrounColor
+                          .foregroundColor
                           .withOpacity(0.8),
                     )),
           ),

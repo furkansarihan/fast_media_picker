@@ -13,7 +13,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.context,
     this.scrollController,
     this.backgroundColor,
-    this.foregrounColor,
+    this.foregroundColor,
     this.maxSelection,
     this.emptyWidget,
     this.loadingWidget,
@@ -26,7 +26,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   final ScrollController scrollController;
   final Color backgroundColor;
-  final Color foregrounColor;
+  final Color foregroundColor;
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
@@ -124,7 +124,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       end: end,
     );
     _isLoading = false;
-    if (al.isEmpty) return;
+    if (al.isEmpty) {
+      if (start == 0) {
+        assets.value = const [];
+      }
+      return;
+    }
     assets.value = (assets.value ?? const []).followedBy(al).toList();
   }
 
