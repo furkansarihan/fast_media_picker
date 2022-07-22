@@ -37,13 +37,23 @@ class FastMediaPicker extends StatelessWidget {
         child: Column(
           children: [
             const FoldersDropdownRow(),
-            const Divider(height: 0, thickness: 1),
+            Divider(
+              height: 0,
+              thickness: 1,
+              color: foregrounColor.withOpacity(0.025),
+            ),
             const LimitedPermissionRow(),
             Expanded(
               child: Stack(
                 children: const [
                   MediaPickerBody(),
-                  FolderListAnimator(),
+                  Positioned(
+                    top: -1,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: FolderListAnimator(),
+                  ),
                   Positioned(
                     bottom: 0,
                     left: 0,

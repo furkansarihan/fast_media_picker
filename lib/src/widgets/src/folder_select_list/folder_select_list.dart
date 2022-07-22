@@ -1,6 +1,7 @@
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 import 'last_folder_media.dart';
 
@@ -24,40 +25,61 @@ class FolderSelectList extends StatelessWidget {
             return FutureBuilder(
               future: folder.assetCountAsync,
               builder: (context, AsyncSnapshot<int> snapshot) {
-                return ListTile(
-                  dense: false,
-                  title: Text(
-                    folder.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.read<MediaPickerCubit>().foregrounColor,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                  horizontalTitleGap: 8,
-                  leading: LastFolderMedia(
-                    folder: folder,
-                    assetCount: snapshot.data,
-                  ),
-                  trailing: Text(
-                    '${snapshot.data ?? 0}',
-                    style: TextStyle(
-                      color: context.read<MediaPickerCubit>().foregrounColor,
-                    ),
-                  ),
-                  onTap: () async {
-                    final prevSelectedFolder =
-                        context.read<MediaPickerCubit>().selectedFolder.value;
-                    context.read<MediaPickerCubit>().selectFolder(folder);
-                    await Future.delayed(const Duration(milliseconds: 300));
-                    context
-                        .read<MediaPickerCubit>()
-                        .toggleSelectFolderState(prevSelectedFolder);
-                  },
+                return FolderSelectListTile(
+                  folder: folder,
+                  assetCount: snapshot.data,
                 );
               },
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class FolderSelectListTile extends StatelessWidget {
+  const FolderSelectListTile({
+    Key? key,
+    required this.folder,
+    required this.assetCount,
+  }) : super(key: key);
+  final AssetPathEntity folder;
+  final int? assetCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final prevSelectedFolder =
+            context.read<MediaPickerCubit>().selectedFolder.value;
+        context.read<MediaPickerCubit>().selectFolder(folder);
+        context
+            .read<MediaPickerCubit>()
+            .toggleSelectFolderState(prevSelectedFolder);
+      },
+      child: ListTile(
+        dense: false,
+        hoverColor: Colors.transparent,
+        selectedColor: Colors.transparent,
+        title: Text(
+          folder.name,
+          style: TextStyle(
+            fontSize: 14,
+            color: context.read<MediaPickerCubit>().foregrounColor,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        horizontalTitleGap: 8,
+        leading: LastFolderMedia(
+          folder: folder,
+          assetCount: assetCount,
+        ),
+        trailing: Text(
+          assetCount?.toString() ?? '',
+          style: TextStyle(
+            color: context.read<MediaPickerCubit>().foregrounColor,
+          ),
         ),
       ),
     );
