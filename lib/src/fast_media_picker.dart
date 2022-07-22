@@ -43,7 +43,6 @@ class FastMediaPicker extends StatelessWidget {
               onPicked,
             ),
         child: Sheet(
-          scrollController: scrollController,
           child: MediaPicker(
             scrollController: scrollController,
             backgroundColor: backgroundColor,
@@ -58,10 +57,8 @@ class FastMediaPicker extends StatelessWidget {
 }
 
 class Sheet extends StatelessWidget {
-  const Sheet({Key? key, required this.child, required this.scrollController})
-      : super(key: key);
+  const Sheet({Key? key, required this.child}) : super(key: key);
   final Widget child;
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +78,7 @@ class Sheet extends StatelessWidget {
     );
     // TODO: background color based on sheet drag
     // TODO: fix scroll jump when sheet is dragged from grabbing widget
+    // TODO: fix gap between grabbing widget and sheetBelow
     return SnappingSheet(
       lockOverflowDrag: false,
       onSnapCompleted: (_, snappingPosition) {
@@ -94,7 +92,7 @@ class Sheet extends StatelessWidget {
         middle,
         top,
       ],
-      grabbingHeight: 60,
+      grabbingHeight: 61,
       grabbing: Container(
         decoration: BoxDecoration(
           color: context.watch<MediaPickerCubit>().backgroundColor,
@@ -122,6 +120,13 @@ class Sheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 36, child: FoldersDropdownRow()),
+            Divider(
+              height: 1,
+              color: context
+                  .watch<MediaPickerCubit>()
+                  .foregroundColor
+                  .withOpacity(0.05),
+            ),
           ],
         ),
       ),
@@ -130,7 +135,8 @@ class Sheet extends StatelessWidget {
         sizeBehavior: SheetSizeStatic(
           size: MediaQuery.of(context).size.height * 0.4,
         ),
-        childScrollController: scrollController,
+        childScrollController:
+            context.watch<MediaPickerCubit>().scrollController,
         child: child,
       ),
     );
