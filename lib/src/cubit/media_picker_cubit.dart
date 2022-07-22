@@ -15,6 +15,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.backgroundColor,
     this.foregrounColor,
     this.maxSelection,
+    this.emptyWidget,
+    this.loadingWidget,
     this.onPicked,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     init();
@@ -26,6 +28,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   final Color backgroundColor;
   final Color foregrounColor;
   final int maxSelection;
+  final Widget? emptyWidget;
+  final Widget? loadingWidget;
   final Function(List<File?>) onPicked;
 
   List<AssetPathEntity>? folders;

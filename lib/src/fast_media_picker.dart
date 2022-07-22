@@ -13,11 +13,15 @@ class FastMediaPicker extends StatelessWidget {
     required this.foregrounColor,
     this.maxSelection = 1,
     required this.onPicked,
+    this.emptyWidget,
+    this.loadingWidget,
   }) : super(key: key);
   final ScrollController? scrollController;
   final Color backgroundColor;
   final Color foregrounColor;
   final int maxSelection;
+  final Widget? emptyWidget;
+  final Widget? loadingWidget;
   final Function(List<File?> files) onPicked;
 
   @override
@@ -30,6 +34,8 @@ class FastMediaPicker extends StatelessWidget {
         backgroundColor,
         foregrounColor,
         maxSelection,
+        emptyWidget,
+        loadingWidget,
         onPicked,
       ),
       child: Material(

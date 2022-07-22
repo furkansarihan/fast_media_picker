@@ -1,9 +1,11 @@
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:fast_media_picker/src/widgets/src/media_grid/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import 'asset_thumbnail.dart';
+import 'loading_widget.dart';
 
 class MediaGrid extends StatelessWidget {
   const MediaGrid({Key? key, this.folder}) : super(key: key);
@@ -15,13 +17,11 @@ class MediaGrid extends StatelessWidget {
       valueListenable: context.read<MediaPickerCubit>().assets,
       builder: (context, List<AssetEntity>? assets, _) {
         if (assets == null) {
-          // TODO: loading widget
-          return const SizedBox.shrink();
+          return const LoadingWidget();
         }
 
         if (assets.isEmpty) {
-          // TODO: empty widget
-          return const Icon(Icons.photo_library_rounded);
+          return const EmptyWidget();
         }
 
         return NotificationListener<ScrollNotification>(

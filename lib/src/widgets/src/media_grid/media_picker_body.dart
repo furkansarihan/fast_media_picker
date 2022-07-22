@@ -1,4 +1,5 @@
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:fast_media_picker/src/widgets/src/media_grid/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -21,7 +22,7 @@ class MediaPickerBody extends StatelessWidget {
         valueListenable: context.read<MediaPickerCubit>().selectedFolder,
         builder: (context, AssetPathEntity? folder, _) {
           return folder == null
-              ? const Icon(Icons.photo_library_rounded)
+              ? const LoadingWidget()
               : Column(
                   children: [
                     Expanded(child: MediaGrid(folder: folder)),
