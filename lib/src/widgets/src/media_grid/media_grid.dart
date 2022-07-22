@@ -26,10 +26,9 @@ class MediaGrid extends StatelessWidget {
 
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
-            if (notification.metrics.atEdge) {
-              if (notification.metrics.pixels != 0) {
-                context.read<MediaPickerCubit>().fetchMoreAsset();
-              }
+            if (notification.metrics.pixels >=
+                notification.metrics.maxScrollExtent) {
+              context.read<MediaPickerCubit>().fetchMoreAsset();
             }
             return false;
           },

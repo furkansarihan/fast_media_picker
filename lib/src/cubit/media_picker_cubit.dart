@@ -33,13 +33,14 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   final Function(List<File?>) onPicked;
 
   List<AssetPathEntity>? folders;
-  ValueNotifier<AssetPathEntity?> selectedFolder = ValueNotifier(null);
-  ValueNotifier<bool> folderSelecting = ValueNotifier(false);
+  final ValueNotifier<AssetPathEntity?> selectedFolder = ValueNotifier(null);
+  final ValueNotifier<bool> folderSelecting = ValueNotifier(false);
 
-  ValueNotifier<List<AssetEntity>?> assets = ValueNotifier(null);
-  ValueNotifier<List<AssetEntity>?> selectedAssets = ValueNotifier(null);
+  final ValueNotifier<List<AssetEntity>?> assets = ValueNotifier(null);
+  final ValueNotifier<List<AssetEntity>?> selectedAssets = ValueNotifier(null);
 
   ScrollController? folderSelectingScrollController;
+  final int pageSize = 36;
 
   void changeNotify(MethodCall call) {
     // TODO: refresh folders
@@ -109,16 +110,19 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     if (selectedFolder.value == folder) return;
     assets.value = null;
     selectedFolder.value = folder;
+    _endOfList = false;
     await fetchMoreAsset();
   }
 
   bool _isLoading = false;
+  bool _endOfList = false;
   fetchMoreAsset() async {
     if (_isLoading) return;
+    if (_endOfList) return;
     if (selectedFolder.value == null) return;
     _isLoading = true;
     int start = assets.value?.length ?? 0;
-    int end = start + 64;
+    int end = start + pageSize;
     List<AssetEntity> al = await selectedFolder.value!.getAssetListRange(
       start: start,
       end: end,
@@ -129,6 +133,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         assets.value = const [];
       }
       return;
+    } else if (al.length < pageSize) {
+      _endOfList = true;
     }
     assets.value = (assets.value ?? const []).followedBy(al).toList();
   }
