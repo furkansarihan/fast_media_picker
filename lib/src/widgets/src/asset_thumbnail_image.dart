@@ -33,6 +33,7 @@ class AssetThumbnailImage extends StatelessWidget {
           width: width,
           height: height,
           child: Image.memory(
+            gaplessPlayback: true,
             snapshot.data!,
             fit: fit,
           ),

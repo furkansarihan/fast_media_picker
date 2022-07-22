@@ -39,7 +39,9 @@ class DropdownButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: context.read<MediaPickerCubit>().folders == null
           ? null
-          : () => context.read<MediaPickerCubit>().toggleSelectFolderState(),
+          : () => context.read<MediaPickerCubit>().toggleSelectFolderState(
+                context.read<MediaPickerCubit>().selectedFolder.value,
+              ),
       child: Center(
         child: Row(
           children: [

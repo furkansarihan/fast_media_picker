@@ -29,6 +29,7 @@ class AssetThumbnail extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             AssetThumbnailImage(
+              key: ValueKey('AssetThumbnailImage_${asset.id}'),
               asset: asset,
               width: width,
               height: width,

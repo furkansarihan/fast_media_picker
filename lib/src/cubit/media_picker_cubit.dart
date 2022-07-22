@@ -11,6 +11,7 @@ part 'media_picker_state.dart';
 class MediaPickerCubit extends Cubit<MediaPickerState> {
   MediaPickerCubit(
     this.context,
+    this.scrollController,
     this.backgroundColor,
     this.foregrounColor,
     this.maxSelection,
@@ -21,6 +22,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   final BuildContext context;
 
+  final ScrollController scrollController;
   final Color backgroundColor;
   final Color foregrounColor;
   final int maxSelection;
@@ -32,6 +34,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   ValueNotifier<List<AssetEntity>?> assets = ValueNotifier(null);
   ValueNotifier<List<AssetEntity>?> selectedAssets = ValueNotifier(null);
+
+  ScrollController? folderSelectingScrollController;
 
   void changeNotify(MethodCall call) {
     // TODO: refresh folders
@@ -84,15 +88,22 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     selectFolder(folders!.first);
   }
 
-  toggleSelectFolderState() {
+  toggleSelectFolderState(AssetPathEntity? prevSelectedFolder) {
     folderSelecting.value = !folderSelecting.value;
+    if (folderSelecting.value) {
+      folderSelectingScrollController = ScrollController(
+        initialScrollOffset: scrollController.offset,
+      );
+    } else if (prevSelectedFolder?.id != selectedFolder.value?.id) {
+      folderSelectingScrollController?.jumpTo(0);
+      scrollController.jumpTo(0);
+    }
   }
 
   selectFolder(AssetPathEntity? folder) async {
     if (folder == null) return;
-    if (selectedFolder.value != folder) {
-      assets.value = const [];
-    }
+    if (selectedFolder.value == folder) return;
+    assets.value = const [];
     selectedFolder.value = folder;
     await fetchMoreAsset();
   }

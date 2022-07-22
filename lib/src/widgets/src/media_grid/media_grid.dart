@@ -33,25 +33,38 @@ class MediaGrid extends StatelessWidget {
             }
             return false;
           },
-          child: GridView.builder(
-            physics: const ClampingScrollPhysics(),
-            itemCount: assets.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              childAspectRatio: 1,
-              crossAxisSpacing: 1,
-              mainAxisSpacing: 1,
-            ),
-            itemBuilder: (context, index) {
-              final asset = assets[index];
-              return AssetThumbnail(
-                key: ValueKey(asset.id),
-                asset: asset,
-                // TODO: bound to grid crossAxisCount
-                width: MediaQuery.of(context).size.width / 4,
-                height: MediaQuery.of(context).size.width / 4,
-              );
-            },
+          child: ValueListenableBuilder(
+            valueListenable: context.read<MediaPickerCubit>().folderSelecting,
+            builder: ((context, bool folderSelecting, child) =>
+                MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: GridView.builder(
+                      key: ValueKey('MediaGrid_${folder?.id}'),
+                      controller: folderSelecting
+                          ? context
+                              .read<MediaPickerCubit>()
+                              .folderSelectingScrollController
+                          : context.read<MediaPickerCubit>().scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: assets.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        childAspectRatio: 1,
+                        crossAxisSpacing: 1,
+                        mainAxisSpacing: 1,
+                      ),
+                      itemBuilder: (context, index) {
+                        final asset = assets[index];
+                        return AssetThumbnail(
+                          asset: asset,
+                          // TODO: bound to grid crossAxisCount
+                          width: MediaQuery.of(context).size.width / 4,
+                          height: MediaQuery.of(context).size.width / 4,
+                        );
+                      },
+                    ))),
           ),
         );
       },

@@ -8,11 +8,13 @@ import 'widgets/widgets.dart';
 class FastMediaPicker extends StatelessWidget {
   const FastMediaPicker({
     Key? key,
+    this.scrollController,
     required this.backgroundColor,
     required this.foregrounColor,
     this.maxSelection = 1,
     required this.onPicked,
   }) : super(key: key);
+  final ScrollController? scrollController;
   final Color backgroundColor;
   final Color foregrounColor;
   final int maxSelection;
@@ -20,9 +22,11 @@ class FastMediaPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Wrap with theme provider to support theme changes
     return BlocProvider<MediaPickerCubit>(
       create: (context) => MediaPickerCubit(
         context,
+        scrollController ?? ScrollController(),
         backgroundColor,
         foregrounColor,
         maxSelection,
