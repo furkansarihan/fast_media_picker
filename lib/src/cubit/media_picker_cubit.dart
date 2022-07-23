@@ -67,19 +67,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         ? arguments['update'] as List<dynamic>
         : const [];
     List<dynamic> deleteList = arguments.containsKey('delete')
-        ? arguments['delete'] as List<dynamic>
-        : const [];
-
-    if (deleteList.isNotEmpty) {
-      for (var element in deleteList) {
-        Map<dynamic, dynamic> deletedElement = element as Map<dynamic, dynamic>;
-        dynamic deletedId = deletedElement.containsKey('id')
-            ? deletedElement['id'] as dynamic
-            : const [];
-        selectedAssets.value?.removeWhere((element) => element.id == deletedId);
-        selectedAssets.value = selectedAssets.value?.toList();
-      }
-    }
+        ? List<dynamic>.from(arguments['delete'], growable: true)
+        : List<dynamic>.from(const [], growable: true);
 
     if (updateList.isNotEmpty && assets.value != null) {
       for (int i = 0; i < updateList.length; i++) {
@@ -92,10 +81,28 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
             assets.value!.indexWhere((element) => element.id == updatedId);
         if (index >= 0) {
           AssetEntity? updatedAsset = await AssetEntity.fromId(updatedId);
-          // TODO: check if asset removed from current folder
           if (updatedAsset != null) {
-            tooggleUpdatedAsset(updatedAsset);
-            assets.value?.replaceRange(index, index + 1, [updatedAsset]);
+            // TODO: check if asset removed from current folder - better
+            AssetPathEntity folder = selectedFolder.value!;
+            int count = await folder.assetCountAsync;
+            List<AssetEntity> al = await folder.getAssetListRange(
+              start: 0,
+              end: count,
+            );
+            bool found = false;
+            for (var i = 0; i < al.length; i++) {
+              AssetEntity ae = al[i];
+              if (ae.id == updatedId) {
+                found = true;
+                break;
+              }
+            }
+            if (found) {
+              tooggleUpdatedAsset(updatedAsset);
+              assets.value?.replaceRange(index, index + 1, [updatedAsset]);
+            } else {
+              deleteList.add(element);
+            }
           }
         } else {
           AssetEntity? updatedAsset = await AssetEntity.fromId(updatedId);
@@ -113,11 +120,23 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
                 tooggleUpdatedAsset(updatedAsset);
                 // TODO: current folder's order?
                 assets.value?.insert(0, updatedAsset);
+                assets.value = List<AssetEntity>.from(assets.value!);
                 break;
               }
             }
           }
         }
+      }
+    }
+
+    if (deleteList.isNotEmpty) {
+      for (var element in deleteList) {
+        Map<dynamic, dynamic> deletedElement = element as Map<dynamic, dynamic>;
+        dynamic deletedId = deletedElement.containsKey('id')
+            ? deletedElement['id'] as dynamic
+            : const [];
+        selectedAssets.value?.removeWhere((element) => element.id == deletedId);
+        selectedAssets.value = selectedAssets.value?.toList();
       }
     }
 
