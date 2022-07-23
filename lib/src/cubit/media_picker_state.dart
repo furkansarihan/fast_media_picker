@@ -21,7 +21,8 @@ class MediaPickerState extends Equatable {
 
 enum MediaPickerStatus {
   loading,
-  noPermission,
+  permenantlyDeniedPermission,
+  deniedPermission,
   limitedPermission,
   fullPermission,
 }

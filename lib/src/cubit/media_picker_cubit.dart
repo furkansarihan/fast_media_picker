@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 part 'media_picker_state.dart';
@@ -19,7 +20,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.loadingWidget,
     this.onPicked,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
-    init();
+    _init();
   }
 
   final BuildContext context;
@@ -56,40 +57,59 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     // PhotoManager.stopChangeNotify();
   }
 
-  init() async {
+  _init() async {
     // TODO:
     // PhotoManager.addChangeCallback(changeNotify);
     // PhotoManager.startChangeNotify();
-    PermissionState ps;
-    try {
-      ps = await PhotoManager.requestPermissionExtend();
-    } catch (_) {
-      ps = PermissionState.denied;
+    PermissionStatus status;
+    if (Platform.isAndroid) {
+      status = await Permission.storage.status;
+    } else {
+      // TODO: ios 13 and below?
+      status = await Permission.photos.status;
     }
-    switch (ps) {
-      case PermissionState.authorized:
-        emit(const MediaPickerState(status: MediaPickerStatus.fullPermission));
-        break;
-      case PermissionState.limited:
-        emit(const MediaPickerState(
-            status: MediaPickerStatus.limitedPermission));
-        break;
-      default:
-        emit(const MediaPickerState(status: MediaPickerStatus.noPermission));
-    }
+
+    _emitPermissionStatus(status);
+
     // TODO: collect all assets if limited permission
     _initAllFolders();
   }
 
+  _emitPermissionStatus(PermissionStatus status) {
+    switch (status) {
+      case PermissionStatus.granted:
+        emit(const MediaPickerState(status: MediaPickerStatus.fullPermission));
+        break;
+      case PermissionStatus.limited:
+        emit(const MediaPickerState(
+            status: MediaPickerStatus.limitedPermission));
+        break;
+      case PermissionStatus.denied:
+        emit(
+            const MediaPickerState(status: MediaPickerStatus.deniedPermission));
+        break;
+      default:
+        emit(const MediaPickerState(
+            status: MediaPickerStatus.permenantlyDeniedPermission));
+    }
+  }
+
   _initAllFolders() async {
     if (state.status == MediaPickerStatus.loading) return;
-    if (state.status == MediaPickerStatus.noPermission) return;
+    if (state.status == MediaPickerStatus.deniedPermission) return;
+    if (state.status == MediaPickerStatus.permenantlyDeniedPermission) return;
+    // TODO: limited always requests for more?
     final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-      hasAll: true,
-      type: RequestType.common,
-    );
+        hasAll: true,
+        type: RequestType.common,
+        filterOption: FilterOptionGroup());
     // TODO: only show folders with assets
     folders = List<AssetPathEntity>.from(paths);
+    // TODO: handle no folder
+    if (folders!.isEmpty) {
+      assets.value = null;
+      return;
+    }
     selectFolder(folders!.first);
   }
 
@@ -174,8 +194,28 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     return onPicked(selectedFiles);
   }
 
-  void openSetting() {
-    PhotoManager.openSetting();
+  bool _appSettingsOpened = false;
+  void requestPermission() async {
+    if (state.status == MediaPickerStatus.permenantlyDeniedPermission) {
+      await openAppSettings();
+      _appSettingsOpened = true;
+      return;
+    }
+    PermissionStatus? status;
+    if (Platform.isAndroid) {
+      status = await Permission.storage.request();
+    } else {
+      status = await Permission.photos.request();
+    }
+
+    _emitPermissionStatus(status);
+    _initAllFolders();
+  }
+
+  void refreshPermission() {
+    if (!_appSettingsOpened) return;
+    _appSettingsOpened = false;
+    _init();
   }
 
   void manageLimited() {

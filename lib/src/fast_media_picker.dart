@@ -73,7 +73,7 @@ class Sheet extends StatelessWidget {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     SnappingPosition top = SnappingPosition.pixels(
       positionPixels:
-          mediaQueryData.size.height - mediaQueryData.padding.top * 4,
+          mediaQueryData.size.height - mediaQueryData.padding.top - 60,
       grabbingContentOffset: GrabbingContentOffset.top,
     );
     // TODO: background color based on sheet drag
@@ -92,7 +92,7 @@ class Sheet extends StatelessWidget {
         middle,
         top,
       ],
-      grabbingHeight: 61,
+      grabbingHeight: 60,
       grabbing: Container(
         decoration: BoxDecoration(
           color: context.watch<MediaPickerCubit>().backgroundColor,
@@ -113,20 +113,13 @@ class Sheet extends StatelessWidget {
                     color: context
                         .watch<MediaPickerCubit>()
                         .foregroundColor
-                        .withOpacity(0.1),
+                        .withOpacity(0.25),
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 36, child: FoldersDropdownRow()),
-            Divider(
-              height: 1,
-              color: context
-                  .watch<MediaPickerCubit>()
-                  .foregroundColor
-                  .withOpacity(0.05),
-            ),
           ],
         ),
       ),

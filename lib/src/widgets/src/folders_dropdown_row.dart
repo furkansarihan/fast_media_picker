@@ -12,7 +12,8 @@ class FoldersDropdownRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
         builder: (context, state) {
-      if (state.status == MediaPickerStatus.noPermission) {
+      if (state.status == MediaPickerStatus.deniedPermission ||
+          state.status == MediaPickerStatus.permenantlyDeniedPermission) {
         return const SizedBox.shrink();
       }
 
