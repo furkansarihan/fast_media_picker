@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
@@ -57,7 +58,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     await removeCallback();
   }
 
-  // TODO: folder changes?
   void changeNotify(MethodCall call) async {
     Map<dynamic, dynamic> arguments = call.arguments as Map<dynamic, dynamic>;
     List<dynamic> createList = arguments.containsKey('create')
@@ -92,9 +92,30 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
             assets.value!.indexWhere((element) => element.id == updatedId);
         if (index >= 0) {
           AssetEntity? updatedAsset = await AssetEntity.fromId(updatedId);
+          // TODO: check if asset removed from current folder
           if (updatedAsset != null) {
             tooggleUpdatedAsset(updatedAsset);
             assets.value?.replaceRange(index, index + 1, [updatedAsset]);
+          }
+        } else {
+          AssetEntity? updatedAsset = await AssetEntity.fromId(updatedId);
+          if (updatedAsset != null) {
+            // TODO: check if asset added to current folder - better
+            AssetPathEntity folder = selectedFolder.value!;
+            int count = await folder.assetCountAsync;
+            List<AssetEntity> al = await folder.getAssetListRange(
+              start: 0,
+              end: count + updateList.length,
+            );
+            for (var i = 0; i < al.length; i++) {
+              AssetEntity ae = al[i];
+              if (ae.id == updatedId) {
+                tooggleUpdatedAsset(updatedAsset);
+                // TODO: current folder's order?
+                assets.value?.insert(0, updatedAsset);
+                break;
+              }
+            }
           }
         }
       }
@@ -115,6 +136,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     }
   }
 
+  // TODO: add callback when permission is granted
   Future<void> addCallback() async {
     PhotoManager.addChangeCallback(changeNotify);
     await PhotoManager.startChangeNotify();
