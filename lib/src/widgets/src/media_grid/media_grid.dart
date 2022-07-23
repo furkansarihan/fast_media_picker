@@ -1,5 +1,6 @@
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:fast_media_picker/src/widgets/src/media_grid/empty_widget.dart';
+import 'package:fast_media_picker/src/widgets/src/media_grid/media_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -38,6 +39,7 @@ class MediaGrid extends StatelessWidget {
                 MediaQuery.removePadding(
                     context: context,
                     removeTop: true,
+                    // TODO: smooth element add and remove
                     child: GridView.builder(
                       key: ValueKey('MediaGrid_${folder?.id}'),
                       controller: folderSelecting
@@ -55,12 +57,8 @@ class MediaGrid extends StatelessWidget {
                         mainAxisSpacing: 1,
                       ),
                       itemBuilder: (context, index) {
-                        final asset = assets[index];
-                        return AssetThumbnail(
-                          asset: asset,
-                          // TODO: bound to grid crossAxisCount
-                          width: MediaQuery.of(context).size.width / 4,
-                          height: MediaQuery.of(context).size.width / 4,
+                        return MediaGridItem(
+                          index: index,
                         );
                       },
                     ))),

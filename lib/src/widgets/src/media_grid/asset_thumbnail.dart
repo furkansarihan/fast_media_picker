@@ -24,6 +24,9 @@ class AssetThumbnail extends StatelessWidget {
       onTap: () => context.read<MediaPickerCubit>().tooggleSelectAsset(
             asset,
           ),
+      onLongPress: () {
+        // TODO: push preview page with hero
+      },
       child: SizedBox(
         child: Stack(
           fit: StackFit.expand,

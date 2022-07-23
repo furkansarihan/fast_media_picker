@@ -21,6 +21,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.onPicked,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
+    addCallback();
   }
 
   final BuildContext context;
@@ -39,28 +40,92 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   final ValueNotifier<List<AssetEntity>?> assets = ValueNotifier(null);
   final ValueNotifier<List<AssetEntity>?> selectedAssets = ValueNotifier(null);
+  final ValueNotifier<List<AssetEntity>?> updatedAssets = ValueNotifier(null);
 
   ScrollController? folderSelectingScrollController;
   final int pageSize = 36;
 
-  void changeNotify(MethodCall call) {
-    // TODO: refresh folders
-    // find selected by name
-    // select selected
-  }
-
   @override
   Future<void> close() async {
     super.close();
-    // TODO:
-    // PhotoManager.removeChangeCallback(changeNotify);
-    // PhotoManager.stopChangeNotify();
+    selectedFolder.dispose();
+    folderSelecting.dispose();
+    assets.dispose();
+    selectedAssets.dispose();
+    updatedAssets.dispose();
+    folderSelectingScrollController?.dispose();
+    await removeCallback();
+  }
+
+  // TODO: folder changes?
+  void changeNotify(MethodCall call) async {
+    Map<dynamic, dynamic> arguments = call.arguments as Map<dynamic, dynamic>;
+    List<dynamic> createList = arguments.containsKey('create')
+        ? arguments['create'] as List<dynamic>
+        : const [];
+    List<dynamic> updateList = arguments.containsKey('update')
+        ? arguments['update'] as List<dynamic>
+        : const [];
+    List<dynamic> deleteList = arguments.containsKey('delete')
+        ? arguments['delete'] as List<dynamic>
+        : const [];
+
+    if (deleteList.isNotEmpty) {
+      for (var element in deleteList) {
+        Map<dynamic, dynamic> deletedElement = element as Map<dynamic, dynamic>;
+        dynamic deletedId = deletedElement.containsKey('id')
+            ? deletedElement['id'] as dynamic
+            : const [];
+        selectedAssets.value?.removeWhere((element) => element.id == deletedId);
+        selectedAssets.value = selectedAssets.value?.toList();
+      }
+    }
+
+    if (updateList.isNotEmpty && assets.value != null) {
+      for (int i = 0; i < updateList.length; i++) {
+        var element = updateList[i];
+        Map<dynamic, dynamic> updatedElement = element as Map<dynamic, dynamic>;
+        dynamic updatedId = updatedElement.containsKey('id')
+            ? updatedElement['id'] as dynamic
+            : const [];
+        int index =
+            assets.value!.indexWhere((element) => element.id == updatedId);
+        if (index >= 0) {
+          AssetEntity? updatedAsset = await AssetEntity.fromId(updatedId);
+          if (updatedAsset != null) {
+            tooggleUpdatedAsset(updatedAsset);
+            assets.value?.replaceRange(index, index + 1, [updatedAsset]);
+          }
+        }
+      }
+    }
+
+    if (createList.isNotEmpty || deleteList.isNotEmpty) {
+      String? selectedFolderId = selectedFolder.value?.id;
+      selectedFolder.value = null;
+      await _initAllFolders(selectedFolderId: selectedFolderId);
+    }
+  }
+
+  tooggleUpdatedAsset(AssetEntity asset) {
+    if (updatedAssets.value == null) {
+      updatedAssets.value = [asset];
+    } else {
+      updatedAssets.value = updatedAssets.value!.followedBy([asset]).toList();
+    }
+  }
+
+  Future<void> addCallback() async {
+    PhotoManager.addChangeCallback(changeNotify);
+    await PhotoManager.startChangeNotify();
+  }
+
+  Future<void> removeCallback() async {
+    PhotoManager.removeChangeCallback(changeNotify);
+    await PhotoManager.stopChangeNotify();
   }
 
   _init() async {
-    // TODO:
-    // PhotoManager.addChangeCallback(changeNotify);
-    // PhotoManager.startChangeNotify();
     PermissionStatus status;
     if (Platform.isAndroid) {
       status = await Permission.storage.status;
@@ -94,23 +159,34 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     }
   }
 
-  _initAllFolders() async {
+  bool _foldersLoading = false;
+  _initAllFolders({String? selectedFolderId}) async {
+    if (_foldersLoading) return;
+    _foldersLoading = true;
     if (state.status == MediaPickerStatus.loading) return;
     if (state.status == MediaPickerStatus.deniedPermission) return;
     if (state.status == MediaPickerStatus.permenantlyDeniedPermission) return;
     // TODO: limited always requests for more?
     final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-        hasAll: true,
-        type: RequestType.common,
-        filterOption: FilterOptionGroup());
+      hasAll: true,
+      type: RequestType.common,
+      filterOption: FilterOptionGroup(),
+    );
     // TODO: only show folders with assets
     folders = List<AssetPathEntity>.from(paths);
     // TODO: handle no folder
     if (folders!.isEmpty) {
       assets.value = null;
+      _foldersLoading = false;
       return;
     }
-    selectFolder(folders!.first);
+    if (selectedFolderId == null) {
+      await selectFolder(folders!.first);
+    } else {
+      await selectFolder(
+          folders!.firstWhere((element) => element.id == selectedFolderId));
+    }
+    _foldersLoading = false;
   }
 
   toggleSelectFolderState(AssetPathEntity? prevSelectedFolder) {
@@ -125,7 +201,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     }
   }
 
-  selectFolder(AssetPathEntity? folder) async {
+  Future<void> selectFolder(AssetPathEntity? folder) async {
     if (folder == null) return;
     if (selectedFolder.value == folder) return;
     assets.value = null;
@@ -136,7 +212,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   bool _isLoading = false;
   bool _endOfList = false;
-  fetchMoreAsset() async {
+  Future<void> fetchMoreAsset() async {
     if (_isLoading) return;
     if (_endOfList) return;
     if (selectedFolder.value == null) return;
