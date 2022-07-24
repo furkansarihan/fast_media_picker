@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -71,18 +72,36 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     return null;
   }
 
-  // TODO: android?
   void changeNotify(MethodCall call) async {
     Map<dynamic, dynamic> arguments = call.arguments as Map<dynamic, dynamic>;
-    List<dynamic> createList = arguments.containsKey('create')
-        ? arguments['create'] as List<dynamic>
-        : const [];
-    List<dynamic> updateList = arguments.containsKey('update')
-        ? arguments['update'] as List<dynamic>
-        : const [];
-    List<dynamic> deleteList = arguments.containsKey('delete')
-        ? List<dynamic>.from(arguments['delete'], growable: true)
-        : List<dynamic>.from(const [], growable: true);
+
+    List<dynamic>? createList;
+    List<dynamic>? updateList;
+    List<dynamic>? deleteList;
+
+    if (Platform.isIOS) {
+      createList = arguments.containsKey('create')
+          ? arguments['create'] as List<dynamic>
+          : const [];
+      updateList = arguments.containsKey('update')
+          ? arguments['update'] as List<dynamic>
+          : const [];
+      deleteList = arguments.containsKey('delete')
+          ? List<dynamic>.from(arguments['delete'], growable: true)
+          : List<dynamic>.from(const [], growable: true);
+    } else {
+      final type =
+          arguments.containsKey('type') ? arguments['type'] as String : null;
+      if (type == 'insert') {
+        createList = [arguments];
+      } else if (type == 'delete') {
+        deleteList = [arguments];
+      }
+
+      createList = createList ?? const [];
+      updateList = updateList ?? const [];
+      deleteList = deleteList ?? const [];
+    }
 
     if (updateList.isNotEmpty && assets.value != null) {
       for (int i = 0; i < updateList.length; i++) {
@@ -238,8 +257,10 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     if (selectedFolderId == null) {
       await selectFolder(folders!.first);
     } else {
-      await selectFolder(
-          folders!.firstWhere((element) => element.id == selectedFolderId));
+      await selectFolder(folders!.firstWhere(
+        (element) => element.id == selectedFolderId,
+        orElse: () => folders!.first,
+      ));
     }
     _foldersLoading = false;
   }
