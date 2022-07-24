@@ -15,6 +15,7 @@ dependencies:
   photo_manager: ^2.2.0-dev.4
   snapping_sheet: ^3.1.0
   permission_handler: ^10.0.0
+  dismissible_page: ^0.7.3
 
 dev_dependencies:
   flutter_test:

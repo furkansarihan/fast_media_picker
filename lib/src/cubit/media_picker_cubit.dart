@@ -1,5 +1,5 @@
-import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +46,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   ScrollController? folderSelectingScrollController;
   final int pageSize = 36;
 
+  Map<String, Uint8List> imageCache = {};
+
   @override
   Future<void> close() async {
     super.close();
+    imageCache.clear();
     selectedFolder.dispose();
     folderSelecting.dispose();
     assets.dispose();
@@ -58,6 +61,17 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     await removeCallback();
   }
 
+  // TODO: manage cache size
+  void addToCache(String key, Uint8List value) {
+    imageCache[key] = value;
+  }
+
+  Uint8List? getFromCache(String key) {
+    if (imageCache.containsKey(key)) return imageCache[key];
+    return null;
+  }
+
+  // TODO: android?
   void changeNotify(MethodCall call) async {
     Map<dynamic, dynamic> arguments = call.arguments as Map<dynamic, dynamic>;
     List<dynamic> createList = arguments.containsKey('create')

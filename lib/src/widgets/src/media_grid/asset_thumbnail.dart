@@ -1,10 +1,14 @@
+import 'dart:io';
+
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../asset_thumbnail_image.dart';
+import 'asset_preview.dart';
 import 'asset_selected_notifier.dart';
 
 class AssetThumbnail extends StatelessWidget {
@@ -20,22 +24,37 @@ class AssetThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MediaPickerCubit cubit = context.read<MediaPickerCubit>();
     return GestureDetector(
-      onTap: () => context.read<MediaPickerCubit>().tooggleSelectAsset(
-            asset,
-          ),
+      onTap: () => cubit.tooggleSelectAsset(
+        asset,
+      ),
       onLongPress: () {
-        // TODO: push preview page with hero
+        // TODO: ios?
+        HapticFeedback.selectionClick();
+        context.pushTransparentRoute(AssetPreview(
+          cubit: cubit,
+          asset: asset,
+          fromWidth: width,
+          fromHeight: height,
+        ));
       },
       child: SizedBox(
         child: Stack(
           fit: StackFit.expand,
           children: [
-            AssetThumbnailImage(
-              key: ValueKey('AssetThumbnailImage_${asset.id}'),
-              asset: asset,
-              width: width,
-              height: width,
+            Hero(
+              tag: asset.id,
+              child: AssetThumbnailImage(
+                key: ValueKey('AssetThumbnailImage_${asset.id}'),
+                cubit: cubit,
+                asset: asset,
+                thumbnailOption: getThumbnailOption(context),
+                width: width,
+                height: width,
+                fit: getFit(asset),
+                placeholderColor: Colors.transparent,
+              ),
             ),
             Positioned(
               right: 2,
@@ -45,6 +64,26 @@ class AssetThumbnail extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  BoxFit getFit(AssetEntity asset) {
+    if (asset.width > asset.height) {
+      return BoxFit.fitHeight;
+    } else {
+      return BoxFit.fitWidth;
+    }
+  }
+
+  ThumbnailOption getThumbnailOption(BuildContext context) {
+    if (Platform.isAndroid) {
+      return ThumbnailOption(
+        size: ThumbnailSize(width.toInt(), height.toInt()),
+      );
+    }
+    return ThumbnailOption.ios(
+      size: ThumbnailSize(width.toInt(), height.toInt()),
+      deliveryMode: DeliveryMode.fastFormat,
     );
   }
 }

@@ -26,12 +26,26 @@ class LastFolderMedia extends StatelessWidget {
           return placeholder(context);
         }
         return AssetThumbnailImage(
+          cubit: context.read<MediaPickerCubit>(),
           asset: snap.data!.first,
+          thumbnailOption: const ThumbnailOption(
+            size: ThumbnailSize(36, 36),
+          ),
           width: 36,
           height: 36,
+          fit: getFit(snap.data!.first),
+          placeholderColor: Colors.transparent,
         );
       },
     );
+  }
+
+  BoxFit getFit(AssetEntity asset) {
+    if (asset.width > asset.height) {
+      return BoxFit.fitHeight;
+    } else {
+      return BoxFit.fitWidth;
+    }
   }
 
   Widget placeholder(BuildContext context) => Container(

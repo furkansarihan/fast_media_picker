@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import 'asset_thumbnail.dart';
 import 'loading_widget.dart';
 
 class MediaGrid extends StatelessWidget {
