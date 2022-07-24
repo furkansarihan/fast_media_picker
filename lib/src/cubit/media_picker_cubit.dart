@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -23,7 +22,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.onPicked,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
-    addCallback();
   }
 
   final BuildContext context;
@@ -174,10 +172,24 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     }
 
     if (createList.isNotEmpty || deleteList.isNotEmpty) {
-      String? selectedFolderId = selectedFolder.value?.id;
-      selectedFolder.value = null;
-      await _initAllFolders(selectedFolderId: selectedFolderId);
+      await refresh();
     }
+
+    if (createList.isEmpty && updateList.isEmpty && deleteList.isEmpty) {
+      int newCount =
+          arguments.containsKey('newCount') ? arguments['newCount'] as int : 0;
+      int oldCount =
+          arguments.containsKey('oldCount') ? arguments['oldCount'] as int : 0;
+      if (newCount != oldCount) {
+        await refresh();
+      }
+    }
+  }
+
+  Future<void> refresh() async {
+    String? selectedFolderId = selectedFolder.value?.id;
+    selectedFolder.value = null;
+    await _initAllFolders(selectedFolderId: selectedFolderId);
   }
 
   tooggleUpdatedAsset(AssetEntity asset) {
@@ -188,13 +200,16 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     }
   }
 
-  // TODO: add callback when permission is granted
+  bool _callbackAdded = false;
   Future<void> addCallback() async {
+    if (_callbackAdded) return;
+    _callbackAdded = true;
     PhotoManager.addChangeCallback(changeNotify);
     await PhotoManager.startChangeNotify();
   }
 
   Future<void> removeCallback() async {
+    if (!_callbackAdded) return;
     PhotoManager.removeChangeCallback(changeNotify);
     await PhotoManager.stopChangeNotify();
   }
@@ -209,8 +224,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     }
 
     _emitPermissionStatus(status);
-
-    // TODO: collect all assets if limited permission
     _initAllFolders();
   }
 
@@ -243,6 +256,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     // TODO: limited always requests for more?
     final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
       hasAll: true,
+      onlyAll: state.status == MediaPickerStatus.limitedPermission,
       type: RequestType.common,
       filterOption: FilterOptionGroup(),
     );
@@ -263,6 +277,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       ));
     }
     _foldersLoading = false;
+    addCallback();
   }
 
   toggleSelectFolderState(AssetPathEntity? prevSelectedFolder) {
@@ -370,9 +385,9 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     _init();
   }
 
-  void manageLimited() {
+  Future<void> manageLimited() async {
     // TODO: push sheet
     // PhotoManager.openSetting();
-    // PhotoManager.presentLimited();
+    await PhotoManager.presentLimited();
   }
 }
