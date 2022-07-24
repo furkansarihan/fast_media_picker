@@ -29,7 +29,7 @@ class AssetThumbnailImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String key = '&${asset.id}&${width}x$height';
+    String key = '${asset.id}_${asset.modifiedDateSecond}_${width}_$height';
     Uint8List? cached = cubit.getFromCache(key);
     if (cached != null) {
       return image(cached);
@@ -38,7 +38,8 @@ class AssetThumbnailImage extends StatelessWidget {
       future: asset.thumbnailDataWithOption(thumbnailOption),
       builder: (context, AsyncSnapshot<Uint8List?> snapshot) {
         if (!snapshot.hasData) {
-          String fromKey = '&${asset.id}&${fromWidth}x$fromHeight';
+          String fromKey =
+              '${asset.id}_${asset.modifiedDateSecond}_${fromWidth}_$fromHeight';
           Uint8List? fromCached = cubit.getFromCache(fromKey);
           if (fromCached != null) {
             return image(fromCached);
