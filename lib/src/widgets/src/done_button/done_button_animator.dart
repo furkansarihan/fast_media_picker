@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import 'done_button.dart';
-
 class DoneButtonAnimator extends StatelessWidget {
   const DoneButtonAnimator({Key? key}) : super(key: key);
 
@@ -20,7 +18,7 @@ class DoneButtonAnimator extends StatelessWidget {
             return AnimatedSwitcher(
               duration: const Duration(milliseconds: 250),
               child: (selectedAssets?.isNotEmpty ?? false) && !selecting
-                  ? const DoneButton()
+                  ? context.read<MediaPickerCubit>().configs.doneWidget
                   : const SizedBox.shrink(),
               transitionBuilder: (child, animation) {
                 return SlideTransition(

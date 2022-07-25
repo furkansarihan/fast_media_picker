@@ -37,12 +37,13 @@ class FoldersDropdownRow extends StatelessWidget {
                 valueListenable:
                     context.read<MediaPickerCubit>().selectedFolder,
                 builder: (context, AssetPathEntity? folder, _) {
+                  if (folder == null) return const SizedBox.shrink();
+
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        // TODO: custom text
-                        folder?.name ?? 'recents',
+                        folder.name,
                         style: TextStyle(
                           fontSize: 16,
                           color: foregroundColor,

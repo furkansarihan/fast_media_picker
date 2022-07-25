@@ -1,3 +1,4 @@
+import 'package:fast_media_picker/src/configs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapping_sheet/snapping_sheet.dart';
@@ -9,33 +10,18 @@ import 'folders_dropdown_row.dart';
 class SheetMediaPicker extends StatelessWidget {
   const SheetMediaPicker({
     Key? key,
-    this.scrollController,
-    this.maxSelection = 1,
-    this.emptyWidget,
-    this.loadingWidget,
+    required this.configs,
   }) : super(key: key);
-  final ScrollController? scrollController;
-  final int maxSelection;
-  final Widget? emptyWidget;
-  final Widget? loadingWidget;
+  final FastMediaPickerConfigs configs;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MediaPickerCubit>(
         create: (context) => MediaPickerCubit(
               context,
-              scrollController,
-              maxSelection,
-              emptyWidget,
-              loadingWidget,
+              configs,
             ),
-        child: Sheet(
-          child: PickerBody(
-            maxSelection: maxSelection,
-            emptyWidget: emptyWidget,
-            loadingWidget: loadingWidget,
-          ),
-        ));
+        child: const Sheet(child: PickerBody()));
   }
 }
 

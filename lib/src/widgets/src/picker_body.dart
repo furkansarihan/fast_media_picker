@@ -3,15 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets.dart';
 
 class PickerBody extends StatelessWidget {
-  const PickerBody({
-    Key? key,
-    this.maxSelection = 1,
-    this.emptyWidget,
-    this.loadingWidget,
-  }) : super(key: key);
-  final int maxSelection;
-  final Widget? emptyWidget;
-  final Widget? loadingWidget;
+  const PickerBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

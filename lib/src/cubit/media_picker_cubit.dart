@@ -8,26 +8,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../configs.dart';
+
 part 'media_picker_state.dart';
 
 class MediaPickerCubit extends Cubit<MediaPickerState> {
   MediaPickerCubit(
     this.context,
-    ScrollController? scrollController,
-    this.maxSelection,
-    this.emptyWidget,
-    this.loadingWidget,
+    this.configs,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
-    this.scrollController = scrollController ?? ScrollController();
   }
 
   final BuildContext context;
-
-  late ScrollController scrollController;
-  final int maxSelection;
-  final Widget? emptyWidget;
-  final Widget? loadingWidget;
+  final FastMediaPickerConfigs configs;
 
   List<AssetPathEntity>? folders;
   final ValueNotifier<AssetPathEntity?> selectedFolder = ValueNotifier(null);
@@ -37,6 +31,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   final ValueNotifier<List<AssetEntity>?> selectedAssets = ValueNotifier(null);
   final ValueNotifier<List<AssetEntity>?> updatedAssets = ValueNotifier(null);
 
+  final ScrollController scrollController = ScrollController();
   ScrollController? folderSelectingScrollController;
   final int pageSize = 36;
 
@@ -339,7 +334,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   bool canSelectAsset() {
     if (selectedAssets.value == null) return true;
-    return selectedAssets.value!.length < maxSelection;
+    return selectedAssets.value!.length < configs.pickLimit;
   }
 
   done() => Navigator.of(context).maybePop(selectedAssets.value);

@@ -19,13 +19,7 @@ class LoadingWidget extends StatelessWidget {
                       .read<MediaPickerCubit>()
                       .folderSelectingScrollController
                   : context.read<MediaPickerCubit>().scrollController,
-              child: context.read<MediaPickerCubit>().loadingWidget ??
-                  Column(
-                    children: const [
-                      SizedBox(height: 16),
-                      CircularProgressIndicator.adaptive(),
-                    ],
-                  ),
+              child: context.read<MediaPickerCubit>().configs.loadingWidget,
             ),
           )),
     );

@@ -20,27 +20,7 @@ class EmptyWidget extends StatelessWidget {
                       .read<MediaPickerCubit>()
                       .folderSelectingScrollController
                   : context.read<MediaPickerCubit>().scrollController,
-              child: context.read<MediaPickerCubit>().emptyWidget ??
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 32),
-                      Icon(
-                        CupertinoIcons.photo,
-                        size: 64,
-                        color: Theme.of(context).textTheme.bodyMedium!.color,
-                      ),
-                      const SizedBox(height: 8),
-                      Text('No Media',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color:
-                                Theme.of(context).textTheme.bodyMedium!.color!,
-                          )),
-                    ],
-                  ),
+              child: context.read<MediaPickerCubit>().configs.emptyWidget,
             ),
           )),
     );
