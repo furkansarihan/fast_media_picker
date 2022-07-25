@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -20,8 +21,8 @@ class FoldersDropdownRow extends StatelessWidget {
       bool limitedPermission = context.read<MediaPickerCubit>().state.status ==
           MediaPickerStatus.limitedPermission;
       Color foregroundColor = limitedPermission
-          ? context.read<MediaPickerCubit>().foregroundColor.withOpacity(0.4)
-          : context.read<MediaPickerCubit>().foregroundColor;
+          ? Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.4)
+          : Theme.of(context).textTheme.bodyMedium!.color!;
       return CupertinoButton(
         padding: EdgeInsets.zero,
         onPressed: limitedPermission

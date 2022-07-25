@@ -8,6 +8,9 @@ class DoneButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: customize
+    Color backgroundColor = Theme.of(context).primaryColor;
+    Color textColor =
+        backgroundColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
     return GestureDetector(
       onTap: () {
         context.read<MediaPickerCubit>().done();
@@ -15,11 +18,11 @@ class DoneButton extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 48,
-        color: Colors.blue,
-        child: const Center(
+        color: backgroundColor,
+        child: Center(
           child: Text(
             'Done',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(color: textColor, fontSize: 18),
           ),
         ),
       ),

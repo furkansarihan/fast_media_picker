@@ -14,7 +14,7 @@ class FolderSelectList extends StatelessWidget {
       context: context,
       removeTop: true,
       child: Container(
-        color: context.watch<MediaPickerCubit>().backgroundColor,
+        color: Theme.of(context).backgroundColor,
         child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
           controller: context.watch<MediaPickerCubit>().scrollController,
@@ -66,7 +66,7 @@ class FolderSelectListTile extends StatelessWidget {
           folder.name,
           style: TextStyle(
             fontSize: 14,
-            color: context.read<MediaPickerCubit>().foregroundColor,
+            color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -78,7 +78,7 @@ class FolderSelectListTile extends StatelessWidget {
         trailing: Text(
           assetCount?.toString() ?? '',
           style: TextStyle(
-            color: context.read<MediaPickerCubit>().foregroundColor,
+            color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
       ),

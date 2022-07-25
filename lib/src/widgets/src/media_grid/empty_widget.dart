@@ -1,5 +1,6 @@
 import 'package:fast_media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmptyWidget extends StatelessWidget {
@@ -28,16 +29,15 @@ class EmptyWidget extends StatelessWidget {
                       Icon(
                         CupertinoIcons.photo,
                         size: 64,
-                        color: context.read<MediaPickerCubit>().foregroundColor,
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                       const SizedBox(height: 8),
                       Text('No Media',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: context
-                                .read<MediaPickerCubit>()
-                                .foregroundColor,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color!,
                           )),
                     ],
                   ),

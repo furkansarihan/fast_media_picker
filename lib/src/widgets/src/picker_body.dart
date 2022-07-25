@@ -5,16 +5,10 @@ import '../widgets.dart';
 class PickerBody extends StatelessWidget {
   const PickerBody({
     Key? key,
-    this.scrollController,
-    required this.backgroundColor,
-    required this.foregroundColor,
     this.maxSelection = 1,
     this.emptyWidget,
     this.loadingWidget,
   }) : super(key: key);
-  final ScrollController? scrollController;
-  final Color backgroundColor;
-  final Color foregroundColor;
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
@@ -23,7 +17,7 @@ class PickerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     // Wrap with theme provider to support theme changes
     return Material(
-      color: backgroundColor,
+      color: Theme.of(context).backgroundColor,
       child: Column(
         children: [
           const LimitedPermissionRow(),

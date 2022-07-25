@@ -59,7 +59,7 @@ class _PermissionLayerState extends State<PermissionLayer>
               Icon(
                 CupertinoIcons.photo,
                 size: 64,
-                color: context.read<MediaPickerCubit>().foregroundColor,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
               const SizedBox(height: 8),
               Text(
@@ -67,7 +67,7 @@ class _PermissionLayerState extends State<PermissionLayer>
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: context.read<MediaPickerCubit>().foregroundColor,
+                  color: Theme.of(context).textTheme.bodyMedium!.color,
                 ),
               ),
               const SizedBox(height: 8),
@@ -75,7 +75,7 @@ class _PermissionLayerState extends State<PermissionLayer>
                 'Please grant permission to use this app',
                 style: TextStyle(
                   fontSize: 14,
-                  color: context.read<MediaPickerCubit>().foregroundColor,
+                  color: Theme.of(context).textTheme.bodyMedium!.color,
                 ),
               ),
               const SizedBox(height: 8),
@@ -88,9 +88,10 @@ class _PermissionLayerState extends State<PermissionLayer>
             child: Divider(
               thickness: 1,
               height: 0,
-              color: context
-                  .watch<MediaPickerCubit>()
-                  .foregroundColor
+              color: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .color!
                   .withOpacity(0.05),
             ),
           ),
@@ -110,7 +111,7 @@ class _PermissionLayerState extends State<PermissionLayer>
                 height: 48,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                 ),
                 child: Center(
                   child: Text(

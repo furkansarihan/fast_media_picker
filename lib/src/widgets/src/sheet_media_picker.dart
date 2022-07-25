@@ -10,38 +10,27 @@ class SheetMediaPicker extends StatelessWidget {
   const SheetMediaPicker({
     Key? key,
     this.scrollController,
-    required this.backgroundColor,
-    required this.foregroundColor,
     this.maxSelection = 1,
     this.emptyWidget,
     this.loadingWidget,
   }) : super(key: key);
   final ScrollController? scrollController;
-  final Color backgroundColor;
-  final Color foregroundColor;
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
 
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollController =
-        this.scrollController ?? ScrollController();
     return BlocProvider<MediaPickerCubit>(
         create: (context) => MediaPickerCubit(
               context,
               scrollController,
-              backgroundColor,
-              foregroundColor,
               maxSelection,
               emptyWidget,
               loadingWidget,
             ),
         child: Sheet(
           child: PickerBody(
-            scrollController: scrollController,
-            backgroundColor: backgroundColor,
-            foregroundColor: foregroundColor,
             maxSelection: maxSelection,
             emptyWidget: emptyWidget,
             loadingWidget: loadingWidget,
@@ -87,36 +76,7 @@ class Sheet extends StatelessWidget {
         top,
       ],
       grabbingHeight: 60,
-      grabbing: Container(
-        decoration: BoxDecoration(
-          color: context.watch<MediaPickerCubit>().backgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 24,
-              child: Center(
-                child: Container(
-                  height: 4,
-                  width: 38,
-                  decoration: BoxDecoration(
-                    color: context
-                        .watch<MediaPickerCubit>()
-                        .foregroundColor
-                        .withOpacity(0.25),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 36, child: FoldersDropdownRow()),
-          ],
-        ),
-      ),
+      grabbing: const GrabbingWidget(),
       sheetBelow: SnappingSheetContent(
         draggable: true,
         sizeBehavior: SheetSizeStatic(
@@ -125,6 +85,45 @@ class Sheet extends StatelessWidget {
         childScrollController:
             context.watch<MediaPickerCubit>().scrollController,
         child: child,
+      ),
+    );
+  }
+}
+
+class GrabbingWidget extends StatelessWidget {
+  const GrabbingWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 24,
+            child: Center(
+              child: Container(
+                height: 4,
+                width: 38,
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .color!
+                      .withOpacity(0.25),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 36, child: FoldersDropdownRow()),
+        ],
       ),
     );
   }

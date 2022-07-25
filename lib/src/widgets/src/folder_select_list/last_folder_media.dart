@@ -51,7 +51,6 @@ class LastFolderMedia extends StatelessWidget {
   Widget placeholder(BuildContext context) => Container(
         width: 36,
         height: 36,
-        color:
-            context.read<MediaPickerCubit>().foregroundColor.withOpacity(0.1),
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.1),
       );
 }

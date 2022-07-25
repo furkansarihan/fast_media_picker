@@ -13,21 +13,18 @@ part 'media_picker_state.dart';
 class MediaPickerCubit extends Cubit<MediaPickerState> {
   MediaPickerCubit(
     this.context,
-    this.scrollController,
-    this.backgroundColor,
-    this.foregroundColor,
+    ScrollController? scrollController,
     this.maxSelection,
     this.emptyWidget,
     this.loadingWidget,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
+    this.scrollController = scrollController ?? ScrollController();
   }
 
   final BuildContext context;
 
-  final ScrollController scrollController;
-  final Color backgroundColor;
-  final Color foregroundColor;
+  late ScrollController scrollController;
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
@@ -55,6 +52,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     selectedAssets.dispose();
     updatedAssets.dispose();
     folderSelectingScrollController?.dispose();
+    scrollController.dispose();
     await removeCallback();
   }
 

@@ -27,9 +27,10 @@ class LimitedPermissionRow extends StatelessWidget {
                 child: Text(
                   "You've given limited permission to access photos and videos.",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: context
-                            .read<MediaPickerCubit>()
-                            .foregroundColor
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .color!
                             .withOpacity(0.6),
                       ),
                 ),
@@ -46,9 +47,10 @@ class LimitedPermissionRow extends StatelessWidget {
                   child: Text('Manage',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             fontWeight: FontWeight.w500,
-                            color: context
-                                .read<MediaPickerCubit>()
-                                .foregroundColor
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .color!
                                 .withOpacity(0.8),
                           )),
                 ),

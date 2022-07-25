@@ -12,6 +12,9 @@ class AssetSelectedNotifier extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = Theme.of(context).primaryColor;
+    Color textColor =
+        backgroundColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
     return ValueListenableBuilder(
       valueListenable: context.read<MediaPickerCubit>().selectedAssets,
       builder: (context, List<AssetEntity>? selectedAssets, _) {
@@ -21,17 +24,18 @@ class AssetSelectedNotifier extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white),
-              color: Colors.blue,
+              color: backgroundColor,
             ),
             width: 18,
             height: 18,
             alignment: Alignment.center,
             child: Text(
               (selectedAssets.indexOf(asset) + 1).toString(),
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w300),
+              style: TextStyle(
+                color: textColor,
+                fontSize: 10,
+                fontWeight: FontWeight.w300,
+              ),
             ),
           );
         } else if (!context.read<MediaPickerCubit>().canSelectAsset()) {
