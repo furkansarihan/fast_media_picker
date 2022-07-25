@@ -1,16 +1,14 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 
-import 'widgets/widgets.dart';
+import '../widgets.dart';
 
-class MediaPicker extends StatelessWidget {
-  const MediaPicker({
+class PickerBody extends StatelessWidget {
+  const PickerBody({
     Key? key,
     this.scrollController,
     required this.backgroundColor,
     required this.foregroundColor,
     this.maxSelection = 1,
-    required this.onPicked,
     this.emptyWidget,
     this.loadingWidget,
   }) : super(key: key);
@@ -20,7 +18,6 @@ class MediaPicker extends StatelessWidget {
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
-  final Function(List<File?> files) onPicked;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +30,7 @@ class MediaPicker extends StatelessWidget {
           Expanded(
             child: Stack(
               children: const [
-                MediaPickerBody(),
+                MediaGrid(),
                 Positioned(
                   top: -1,
                   bottom: 0,

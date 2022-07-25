@@ -19,7 +19,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.maxSelection,
     this.emptyWidget,
     this.loadingWidget,
-    this.onPicked,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
   }
@@ -32,7 +31,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   final int maxSelection;
   final Widget? emptyWidget;
   final Widget? loadingWidget;
-  final Function(List<File?>) onPicked;
 
   List<AssetPathEntity>? folders;
   final ValueNotifier<AssetPathEntity?> selectedFolder = ValueNotifier(null);
@@ -346,20 +344,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     return selectedAssets.value!.length < maxSelection;
   }
 
-  bool _doneLoading = false;
-  done() async {
-    // TODO: better way to do this - no async?
-    if (_doneLoading) return;
-    if (selectedAssets.value?.isEmpty ?? true) onPicked(const []);
-    _doneLoading = true;
-    List<File?> selectedFiles = await Future.wait(
-      selectedAssets.value!.map((a) async {
-        return await a.file;
-      }),
-    );
-    _doneLoading = false;
-    return onPicked(selectedFiles);
-  }
+  done() => Navigator.of(context).maybePop(selectedAssets.value);
 
   bool _appSettingsOpened = false;
   void requestPermission() async {
