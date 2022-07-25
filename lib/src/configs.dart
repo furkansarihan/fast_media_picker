@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 import 'default_widgets/default_widgets.dart';
 
 class FastMediaPickerConfigs {
   final int pickLimit;
+  final RequestType type;
 
   final Widget emptyWidget;
   final Widget loadingWidget;
@@ -13,6 +15,8 @@ class FastMediaPickerConfigs {
 
   const FastMediaPickerConfigs({
     this.pickLimit = 1,
+    // TODO: video support
+    this.type = RequestType.image,
     this.emptyWidget = const DefaultEmptyBody(
       noMediaText: 'No Media',
     ),

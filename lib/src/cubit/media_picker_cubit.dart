@@ -248,8 +248,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
       hasAll: true,
       onlyAll: state.status == MediaPickerStatus.limitedPermission,
-      type: RequestType.common,
-      filterOption: FilterOptionGroup(),
+      type: configs.type,
     );
     // TODO: only show folders with assets
     folders = List<AssetPathEntity>.from(paths);
