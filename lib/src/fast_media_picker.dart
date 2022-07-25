@@ -56,7 +56,7 @@ class FastMediaPicker {
           return Theme(
             data: themeData,
             child: SheetMediaPicker(
-              configs: configs = const FastMediaPickerConfigs(),
+              configs: configs ?? const FastMediaPickerConfigs(),
             ),
           );
         },

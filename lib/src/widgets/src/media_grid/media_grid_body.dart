@@ -48,9 +48,11 @@ class MediaGridBody extends StatelessWidget {
                           : context.read<MediaPickerCubit>().scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: assets.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: context
+                            .read<MediaPickerCubit>()
+                            .configs
+                            .crossAxisCount,
                         childAspectRatio: 1,
                         crossAxisSpacing: 1,
                         mainAxisSpacing: 1,

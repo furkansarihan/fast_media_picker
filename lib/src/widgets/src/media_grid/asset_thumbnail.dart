@@ -77,13 +77,13 @@ class AssetThumbnail extends StatelessWidget {
 
   ThumbnailOption getThumbnailOption(BuildContext context) {
     if (Platform.isAndroid) {
-      return ThumbnailOption(
-        size: ThumbnailSize(width.toInt(), height.toInt()),
+      return const ThumbnailOption(
+        size: ThumbnailSize.square(200),
       );
     }
     return ThumbnailOption.ios(
-      size: ThumbnailSize(width.toInt(), height.toInt()),
-      deliveryMode: DeliveryMode.fastFormat,
+      size: const ThumbnailSize.square(200),
+      deliveryMode: DeliveryMode.opportunistic,
     );
   }
 }

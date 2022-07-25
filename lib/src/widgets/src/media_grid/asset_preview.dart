@@ -66,7 +66,7 @@ class AssetPreview extends StatelessWidget {
     }
     return ThumbnailOption.ios(
       size: ThumbnailSize(width.toInt(), height.toInt()),
-      deliveryMode: DeliveryMode.opportunistic,
+      deliveryMode: DeliveryMode.highQualityFormat,
     );
   }
 }

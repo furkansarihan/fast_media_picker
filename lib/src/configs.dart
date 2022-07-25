@@ -4,8 +4,9 @@ import 'package:photo_manager/photo_manager.dart';
 import 'default_widgets/default_widgets.dart';
 
 class FastMediaPickerConfigs {
-  final int pickLimit;
   final RequestType type;
+  final int pickLimit;
+  final int crossAxisCount;
 
   final Widget emptyWidget;
   final Widget loadingWidget;
@@ -14,9 +15,10 @@ class FastMediaPickerConfigs {
   final Widget limitedPermissionRowWidget;
 
   const FastMediaPickerConfigs({
-    this.pickLimit = 1,
     // TODO: video support
     this.type = RequestType.image,
+    this.pickLimit = 1,
+    this.crossAxisCount = 4,
     this.emptyWidget = const DefaultEmptyBody(
       noMediaText: 'No Media',
     ),
