@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../no_glow_scroll_behaviour.dart';
 import 'loading_widget.dart';
 
 class MediaGridBody extends StatelessWidget {
@@ -23,17 +24,17 @@ class MediaGridBody extends StatelessWidget {
         if (assets.isEmpty) {
           return const EmptyWidget();
         }
-
-        return NotificationListener<ScrollNotification>(
+        MediaPickerCubit cubit = context.read<MediaPickerCubit>();
+        Widget child = NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
             if (notification.metrics.pixels >=
                 notification.metrics.maxScrollExtent) {
-              context.read<MediaPickerCubit>().fetchMoreAsset();
+              cubit.fetchMoreAsset();
             }
             return false;
           },
           child: ValueListenableBuilder(
-            valueListenable: context.read<MediaPickerCubit>().folderSelecting,
+            valueListenable: cubit.folderSelecting,
             builder: ((context, bool folderSelecting, child) =>
                 MediaQuery.removePadding(
                     context: context,
@@ -42,17 +43,12 @@ class MediaGridBody extends StatelessWidget {
                     child: GridView.builder(
                       key: ValueKey('MediaGrid_${folder?.id}'),
                       controller: folderSelecting
-                          ? context
-                              .read<MediaPickerCubit>()
-                              .folderSelectingScrollController
-                          : context.read<MediaPickerCubit>().scrollController,
+                          ? cubit.folderSelectingScrollController
+                          : cubit.scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: assets.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: context
-                            .read<MediaPickerCubit>()
-                            .configs
-                            .crossAxisCount,
+                        crossAxisCount: cubit.configs.crossAxisCount,
                         childAspectRatio: 1,
                         crossAxisSpacing: 1,
                         mainAxisSpacing: 1,
@@ -64,6 +60,11 @@ class MediaGridBody extends StatelessWidget {
                       },
                     ))),
           ),
+        );
+
+        return ScrollConfiguration(
+          behavior: const NoGlowScrollBehavior(),
+          child: child,
         );
       },
     );

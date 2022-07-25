@@ -20,7 +20,7 @@ class LastFolderMedia extends StatelessWidget {
       return placeholder(context);
     }
     return FutureBuilder(
-      future: folder.getAssetListRange(start: 0, end: 1),
+      future: folder.getAssetListRange(start: 0, end: 0),
       builder: (context, AsyncSnapshot<List<AssetEntity>> snap) {
         if (snap.data == null || snap.data!.isEmpty) {
           return placeholder(context);

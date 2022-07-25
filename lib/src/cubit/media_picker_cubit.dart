@@ -240,10 +240,10 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   bool _foldersLoading = false;
   _initAllFolders({String? selectedFolderId}) async {
     if (_foldersLoading) return;
-    _foldersLoading = true;
     if (state.status == MediaPickerStatus.loading) return;
     if (state.status == MediaPickerStatus.deniedPermission) return;
     if (state.status == MediaPickerStatus.permenantlyDeniedPermission) return;
+    _foldersLoading = true;
     // TODO: limited always requests for more?
     final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
       hasAll: true,

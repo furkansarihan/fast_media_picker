@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../no_glow_scroll_behaviour.dart';
 import 'last_folder_media.dart';
 
 class FolderSelectList extends StatelessWidget {
@@ -10,7 +11,7 @@ class FolderSelectList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery.removePadding(
+    Widget child = MediaQuery.removePadding(
       context: context,
       removeTop: true,
       child: Container(
@@ -34,6 +35,11 @@ class FolderSelectList extends StatelessWidget {
           },
         ),
       ),
+    );
+
+    return ScrollConfiguration(
+      behavior: const NoGlowScrollBehavior(),
+      child: child,
     );
   }
 }
