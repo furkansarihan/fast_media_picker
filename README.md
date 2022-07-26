@@ -1,6 +1,6 @@
 # fast_media_picker
 
-A media picker based on Instagram's UI design.
+Media picker based on Instagram's UI design.
 
 ![fast_media_picker](https://github.com/furkansarihan/fast_media_picker/raw/assets/assets/fast_media_picker.gif)
 
