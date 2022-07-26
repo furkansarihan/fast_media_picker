@@ -1,4 +1,5 @@
 import 'package:fast_media_picker/src/configs.dart';
+import 'package:fast_media_picker/src/widgets/src/custom_snapping_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapping_sheet/snapping_sheet.dart';
@@ -32,17 +33,17 @@ class Sheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const SnappingPosition bottom = SnappingPosition.factor(
-      positionFactor: 0,
+      positionFactor: -1,
       grabbingContentOffset: GrabbingContentOffset.bottom,
     );
     const SnappingPosition middle = SnappingPosition.factor(
-      positionFactor: 0.75,
+      positionFactor: 0.7,
       grabbingContentOffset: GrabbingContentOffset.middle,
     );
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     SnappingPosition top = SnappingPosition.pixels(
       positionPixels:
-          mediaQueryData.size.height - mediaQueryData.padding.top - 60,
+          mediaQueryData.size.height - mediaQueryData.padding.top - 68,
       grabbingContentOffset: GrabbingContentOffset.top,
     );
     // TODO: background color based on sheet drag
@@ -50,18 +51,34 @@ class Sheet extends StatelessWidget {
     // TODO: fix gap between grabbing widget and sheetBelow
     return SnappingSheet(
       lockOverflowDrag: false,
-      onSnapCompleted: (_, snappingPosition) {
+      onSnapStart: (positionData, snappingPosition) {
         if (snappingPosition == bottom) {
           Navigator.of(context).maybePop();
         }
       },
+      getSnappingCalculator: ({
+        List<SnappingPosition>? allSnappingPositions,
+        double? currentPosition,
+        double? grabbingHeight,
+        DragUpdateDetails? lastDragUpdateDetails,
+        SnappingPosition? lastSnappingPosition,
+        double? maxHeight,
+      }) =>
+          CustomSnappingCalculator(
+        allSnappingPositions: allSnappingPositions!,
+        currentPosition: currentPosition!,
+        grabbingHeight: grabbingHeight!,
+        lastDragUpdateDetails: lastDragUpdateDetails,
+        lastSnappingPosition: lastSnappingPosition!,
+        maxHeight: maxHeight!,
+      ),
       initialSnappingPosition: middle,
       snappingPositions: [
         bottom,
         middle,
         top,
       ],
-      grabbingHeight: 60,
+      grabbingHeight: 68,
       grabbing: const GrabbingWidget(),
       sheetBelow: SnappingSheetContent(
         draggable: true,
@@ -92,7 +109,7 @@ class GrabbingWidget extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 24,
+            height: 28,
             child: Center(
               child: Container(
                 height: 4,
@@ -109,6 +126,7 @@ class GrabbingWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 36, child: FoldersDropdownRow()),
+          const SizedBox(height: 4),
         ],
       ),
     );

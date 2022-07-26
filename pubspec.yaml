@@ -13,7 +13,10 @@ dependencies:
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
   photo_manager: ^2.2.0-dev.4
-  snapping_sheet: ^3.1.0
+  snapping_sheet: # ^3.1.0
+    git:
+      url: git@github.com:furkansarihan/snapping_sheet.git
+      ref: 336866c66dd33b3c01bbb7d53ec4a24c040a7f81
   permission_handler: ^10.0.0
   dismissible_page: ^0.7.3
 

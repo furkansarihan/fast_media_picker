@@ -23,8 +23,8 @@ class AssetSelectedNotifier extends StatelessWidget {
               border: Border.all(color: Colors.white),
               color: Theme.of(context).colorScheme.primary,
             ),
-            width: 18,
-            height: 18,
+            width: 20,
+            height: 20,
             alignment: Alignment.center,
             child: Text(
               (selectedAssets.indexOf(asset) + 1).toString(),
@@ -42,10 +42,10 @@ class AssetSelectedNotifier extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white),
-              color: Colors.grey.withOpacity(0.5),
+              color: Colors.white.withOpacity(0.5),
             ),
-            width: 18,
-            height: 18,
+            width: 20,
+            height: 20,
           );
         }
 

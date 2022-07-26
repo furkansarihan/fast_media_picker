@@ -37,9 +37,14 @@ class MediaGridBody extends StatelessWidget {
             valueListenable: cubit.folderSelecting,
             builder: ((context, bool folderSelecting, child) =>
                 MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    // TODO: smooth element add and remove
+                  context: context,
+                  removeTop: true,
+                  // TODO: smooth element add and remove
+                  child: Scrollbar(
+                    controller: folderSelecting
+                        ? cubit.folderSelectingScrollController
+                        : cubit.scrollController,
+                    interactive: true,
                     child: GridView.builder(
                       key: ValueKey('MediaGrid_${folder?.id}'),
                       controller: folderSelecting
@@ -58,7 +63,9 @@ class MediaGridBody extends StatelessWidget {
                           index: index,
                         );
                       },
-                    ))),
+                    ),
+                  ),
+                )),
           ),
         );
 
