@@ -19,20 +19,24 @@ class CustomSnappingCalculator extends SnappingCalculator {
 
   @override
   SnappingPosition getBestSnappingPosition() {
-    var snappingPositionsSorted = _getSnappingPositionInSizeOrder();
+    var snappingPositionsSorted = _getPositionInSizeOrder(allSnappingPositions);
     if (currentPosition > getBiggestPositionPixels()) {
       return snappingPositionsSorted.last;
     } else if (currentPosition < getSmallestPositionPixels()) {
       return snappingPositionsSorted.first;
     }
 
-    SnappingPosition closest =
-        _getClosestSnappingPosition(allSnappingPositions);
-
     final isFlicked = _isFlicked();
     if (isFlicked) {
       final dragDirection = _getDragDirection();
-      final currentIndex = snappingPositionsSorted.indexOf(closest);
+      final current = SnappingPosition.pixels(
+        positionPixels: currentPosition,
+      );
+      snappingPositionsSorted.insert(0, current);
+      snappingPositionsSorted = _getPositionInSizeOrder(
+        snappingPositionsSorted,
+      );
+      final currentIndex = snappingPositionsSorted.indexOf(current);
       if (dragDirection == DragDirection.up) {
         final index =
             (currentIndex + 1).clamp(0, snappingPositionsSorted.length - 1);
@@ -44,7 +48,7 @@ class CustomSnappingCalculator extends SnappingCalculator {
       }
     }
 
-    return closest;
+    return _getClosestSnappingPosition(allSnappingPositions);
   }
 
   SnappingPosition _getClosestSnappingPosition(
@@ -99,8 +103,10 @@ class CustomSnappingCalculator extends SnappingCalculator {
     return (pos - currentPosition).abs();
   }
 
-  List<SnappingPosition> _getSnappingPositionInSizeOrder() {
-    var snappingPositionsToSort = [...allSnappingPositions];
+  List<SnappingPosition> _getPositionInSizeOrder(
+    List<SnappingPosition> snappingPositions,
+  ) {
+    var snappingPositionsToSort = [...snappingPositions];
     snappingPositionsToSort.sort((a, b) {
       return a
           .getPositionInPixels(maxHeight, grabbingHeight)
