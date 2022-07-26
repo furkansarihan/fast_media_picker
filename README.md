@@ -2,7 +2,7 @@
 
 A media picker based on Instagram's UI design.
 
-![fast_color_picker](https://github.com/furkansarihan/fast_media_picker/blob/assets/assets/fast_color_picker.gif)
+![fast_media_picker](https://github.com/furkansarihan/fast_media_picker/raw/assets/assets/fast_media_picker.gif)
 
 ## Getting started
 Before using fast_media_picker, [photo_manager](https://pub.dev/packages/photo_manager) and [permission_handler](https://pub.dev/packages/permission_handler) need to be configured.
@@ -39,7 +39,7 @@ File? image = await result.first.file;
 
 ### Customize UI
 
-The body while fast_color_picker asking for permission.
+The body while fast_media_picker asking for permission.
 
 ```dart
 configs: FastMediaPickerConfigs(
