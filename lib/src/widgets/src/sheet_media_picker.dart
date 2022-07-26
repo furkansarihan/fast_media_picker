@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fast_media_picker/src/configs.dart';
 import 'package:fast_media_picker/src/widgets/src/custom_snapping_calculator.dart';
 import 'package:flutter/material.dart';
@@ -46,15 +48,19 @@ class Sheet extends StatelessWidget {
           mediaQueryData.size.height - mediaQueryData.padding.top - 68,
       grabbingContentOffset: GrabbingContentOffset.top,
     );
-    // TODO: background color based on sheet drag
     // TODO: fix scroll jump when sheet is dragged from grabbing widget
     // TODO: fix gap between grabbing widget and sheetBelow
-    return SnappingSheet(
+    Widget sheet = SnappingSheet(
+      controller: context.read<MediaPickerCubit>().snappingSheetController,
       lockOverflowDrag: false,
       onSnapStart: (positionData, snappingPosition) {
         if (snappingPosition == bottom) {
           Navigator.of(context).maybePop();
         }
+      },
+      onSheetMoved: (positionData) {
+        context.read<MediaPickerCubit>().currentSheetPosition.value =
+            positionData.pixels;
       },
       getSnappingCalculator: ({
         List<SnappingPosition>? allSnappingPositions,
@@ -72,7 +78,7 @@ class Sheet extends StatelessWidget {
         lastSnappingPosition: lastSnappingPosition!,
         maxHeight: maxHeight!,
       ),
-      initialSnappingPosition: middle,
+      initialSnappingPosition: bottom,
       snappingPositions: [
         bottom,
         middle,
@@ -89,6 +95,30 @@ class Sheet extends StatelessWidget {
             context.watch<MediaPickerCubit>().scrollController,
         child: child,
       ),
+    );
+
+    return Stack(
+      children: [
+        const SheetBackground(),
+        sheet,
+      ],
+    );
+  }
+}
+
+class SheetBackground extends StatelessWidget {
+  const SheetBackground({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: context.read<MediaPickerCubit>().currentSheetPosition,
+      builder: (context, double position, _) {
+        double opacity = position / MediaQuery.of(context).size.height;
+        return Container(
+          color: Colors.black.withOpacity(opacity.clamp(0, 0.6)),
+        );
+      },
     );
   }
 }

@@ -13,23 +13,8 @@ class FastMediaPicker {
       PageRouteBuilder(
         opaque: false,
         barrierDismissible: true,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return Stack(
-            children: [
-              FadeTransition(
-                opacity: animation,
-                child: Container(color: Colors.black38),
-              ),
-              SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, 1),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
-            ],
-          );
-        },
+        transitionDuration: const Duration(),
+        reverseTransitionDuration: const Duration(),
         pageBuilder: (context, animation, secondaryAnimation) {
           Brightness brightness = Theme.of(context).brightness;
           ThemeData themeData;

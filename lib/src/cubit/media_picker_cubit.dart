@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:snapping_sheet/snapping_sheet.dart';
 
 import '../configs.dart';
 
@@ -18,6 +19,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.configs,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      snappingSheetController.snapToPosition(const SnappingPosition.factor(
+        positionFactor: 0.7,
+        grabbingContentOffset: GrabbingContentOffset.middle,
+      ));
+    });
   }
 
   final BuildContext context;
@@ -32,6 +39,9 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   final ValueNotifier<List<AssetEntity>?> updatedAssets = ValueNotifier(null);
 
   final ScrollController scrollController = ScrollController();
+  final SnappingSheetController snappingSheetController =
+      SnappingSheetController();
+  final ValueNotifier<double> currentSheetPosition = ValueNotifier(0);
   ScrollController? folderSelectingScrollController;
   final int pageSize = 36;
 
