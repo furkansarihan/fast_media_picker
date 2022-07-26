@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:fast_media_picker/src/configs.dart';
 import 'package:fast_media_picker/src/widgets/src/custom_snapping_calculator.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +35,7 @@ class Sheet extends StatelessWidget {
     const SnappingPosition bottom = SnappingPosition.factor(
       positionFactor: -1,
       grabbingContentOffset: GrabbingContentOffset.bottom,
+      snappingDuration: Duration(milliseconds: 500),
     );
     const SnappingPosition middle = SnappingPosition.factor(
       positionFactor: 0.7,
@@ -50,17 +49,23 @@ class Sheet extends StatelessWidget {
     );
     // TODO: fix scroll jump when sheet is dragged from grabbing widget
     // TODO: fix gap between grabbing widget and sheetBelow
+    bool popStarted = true;
     Widget sheet = SnappingSheet(
       controller: context.read<MediaPickerCubit>().snappingSheetController,
       lockOverflowDrag: false,
       onSnapStart: (positionData, snappingPosition) {
         if (snappingPosition == bottom) {
-          Navigator.of(context).maybePop();
+          popStarted = true;
+        } else {
+          popStarted = false;
         }
       },
       onSheetMoved: (positionData) {
         context.read<MediaPickerCubit>().currentSheetPosition.value =
             positionData.pixels;
+        if (popStarted && positionData.pixels <= 0) {
+          Navigator.of(context).maybePop();
+        }
       },
       getSnappingCalculator: ({
         List<SnappingPosition>? allSnappingPositions,
