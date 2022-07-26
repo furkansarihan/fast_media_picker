@@ -2,7 +2,7 @@ import 'package:fast_media_picker/src/configs.dart';
 import 'package:fast_media_picker/src/widgets/src/custom_snapping_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapping_sheet/snapping_sheet.dart';
+import 'package:snapping_sheet_2/snapping_sheet.dart';
 
 import '../../cubit/media_picker_cubit.dart';
 import 'picker_body.dart';

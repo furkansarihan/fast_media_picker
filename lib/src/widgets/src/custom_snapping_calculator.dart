@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/gestures.dart';
-import 'package:snapping_sheet/snapping_sheet.dart';
+import 'package:snapping_sheet_2/snapping_sheet.dart';
 
 enum DragDirection {
   up,
