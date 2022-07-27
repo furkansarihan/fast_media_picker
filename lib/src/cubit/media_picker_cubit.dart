@@ -80,7 +80,9 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     snappingSheetController.snapToPosition(middle);
   }
 
+  bool popping = false;
   void popSheet() {
+    popping = true;
     SnappingPosition bottom = const SnappingPosition.factor(
       positionFactor: -1,
       grabbingContentOffset: GrabbingContentOffset.bottom,
