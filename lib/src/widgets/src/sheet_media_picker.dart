@@ -32,19 +32,21 @@ class Sheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    double deviceHeight = mediaQueryData.size.height;
+    double topPadding = mediaQueryData.padding.top;
+    double grabbingHeigth = 68;
     const SnappingPosition bottom = SnappingPosition.factor(
       positionFactor: -1,
       grabbingContentOffset: GrabbingContentOffset.bottom,
-      snappingDuration: Duration(milliseconds: 500),
+      snappingDuration: Duration(milliseconds: 1000),
     );
-    const SnappingPosition middle = SnappingPosition.factor(
-      positionFactor: 0.7,
+    SnappingPosition middle = SnappingPosition.pixels(
+      positionPixels: deviceHeight - 128 - topPadding - grabbingHeigth,
       grabbingContentOffset: GrabbingContentOffset.middle,
     );
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
     SnappingPosition top = SnappingPosition.pixels(
-      positionPixels:
-          mediaQueryData.size.height - mediaQueryData.padding.top - 68,
+      positionPixels: deviceHeight - topPadding - grabbingHeigth,
       grabbingContentOffset: GrabbingContentOffset.top,
     );
     // TODO: fix scroll jump when sheet is dragged from grabbing widget
@@ -54,11 +56,15 @@ class Sheet extends StatelessWidget {
       controller: context.read<MediaPickerCubit>().snappingSheetController,
       lockOverflowDrag: false,
       onSnapStart: (positionData, snappingPosition) {
+        context.read<MediaPickerCubit>().lastDragUpdates.clear();
         if (snappingPosition == bottom) {
           popStarted = true;
         } else {
           popStarted = false;
         }
+      },
+      onDragUpdate: (DragUpdateDetails details) {
+        context.read<MediaPickerCubit>().lastDragUpdates.insert(0, details);
       },
       onSheetMoved: (positionData) {
         context.read<MediaPickerCubit>().currentSheetPosition.value =
@@ -71,7 +77,6 @@ class Sheet extends StatelessWidget {
         List<SnappingPosition>? allSnappingPositions,
         double? currentPosition,
         double? grabbingHeight,
-        DragUpdateDetails? lastDragUpdateDetails,
         SnappingPosition? lastSnappingPosition,
         double? maxHeight,
       }) =>
@@ -79,7 +84,7 @@ class Sheet extends StatelessWidget {
         allSnappingPositions: allSnappingPositions!,
         currentPosition: currentPosition!,
         grabbingHeight: grabbingHeight!,
-        lastDragUpdateDetails: lastDragUpdateDetails,
+        lastDragUpdates: context.read<MediaPickerCubit>().lastDragUpdates,
         lastSnappingPosition: lastSnappingPosition!,
         maxHeight: maxHeight!,
       ),
@@ -94,7 +99,7 @@ class Sheet extends StatelessWidget {
       sheetBelow: SnappingSheetContent(
         draggable: true,
         sizeBehavior: SheetSizeStatic(
-          size: MediaQuery.of(context).size.height * 0.4,
+          size: deviceHeight - 128 - topPadding - grabbingHeigth - 32,
         ),
         childScrollController:
             context.watch<MediaPickerCubit>().scrollController,

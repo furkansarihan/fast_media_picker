@@ -84,7 +84,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -218,7 +218,7 @@ packages:
       name: snapping_sheet_2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   source_span:
     dependency: transitive
     description:

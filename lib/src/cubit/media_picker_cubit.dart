@@ -19,12 +19,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     this.configs,
   ) : super(const MediaPickerState(status: MediaPickerStatus.loading)) {
     _init();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      snappingSheetController.snapToPosition(const SnappingPosition.factor(
-        positionFactor: 0.7,
-        grabbingContentOffset: GrabbingContentOffset.middle,
-      ));
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => initSheet());
   }
 
   final BuildContext context;
@@ -42,6 +37,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   final SnappingSheetController snappingSheetController =
       SnappingSheetController();
   final ValueNotifier<double> currentSheetPosition = ValueNotifier(0);
+  final List<DragUpdateDetails> lastDragUpdates = [];
   ScrollController? folderSelectingScrollController;
   final int pageSize = 36;
 
@@ -50,6 +46,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   @override
   Future<void> close() async {
     super.close();
+    lastDragUpdates.clear();
     imageCache.clear();
     selectedFolder.dispose();
     folderSelecting.dispose();
@@ -69,6 +66,18 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   Uint8List? getFromCache(String key) {
     if (imageCache.containsKey(key)) return imageCache[key];
     return null;
+  }
+
+  void initSheet() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    double deviceHeight = mediaQueryData.size.height;
+    double topPadding = mediaQueryData.padding.top;
+    double grabbingHeigth = 68;
+    SnappingPosition middle = SnappingPosition.pixels(
+      positionPixels: deviceHeight - 128 - topPadding - grabbingHeigth,
+      grabbingContentOffset: GrabbingContentOffset.middle,
+    );
+    snappingSheetController.snapToPosition(middle);
   }
 
   void changeNotify(MethodCall call) async {

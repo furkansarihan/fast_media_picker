@@ -7,7 +7,6 @@ class PickerBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Wrap with theme provider to support theme changes
     return Material(
       color: Theme.of(context).backgroundColor,
       child: Column(

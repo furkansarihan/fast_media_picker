@@ -1,7 +1,6 @@
+## 0.0.4
+* minor improvement
 ## 0.0.3
-
-* Readme update.
-
+* readme update
 ## 0.0.1
-
-* Initial release.
+* initial release

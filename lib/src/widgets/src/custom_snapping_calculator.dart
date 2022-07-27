@@ -8,14 +8,15 @@ enum DragDirection {
 }
 
 class CustomSnappingCalculator extends SnappingCalculator {
-  CustomSnappingCalculator(
-      {required super.allSnappingPositions,
-      required super.lastSnappingPosition,
-      required super.maxHeight,
-      required super.grabbingHeight,
-      required super.currentPosition,
-      this.lastDragUpdateDetails});
-  DragUpdateDetails? lastDragUpdateDetails;
+  CustomSnappingCalculator({
+    required super.allSnappingPositions,
+    required super.lastSnappingPosition,
+    required super.maxHeight,
+    required super.grabbingHeight,
+    required super.currentPosition,
+    required this.lastDragUpdates,
+  });
+  final List<DragUpdateDetails> lastDragUpdates;
 
   @override
   SnappingPosition getBestSnappingPosition() {
@@ -84,15 +85,29 @@ class CustomSnappingCalculator extends SnappingCalculator {
   }
 
   DragDirection _getDragDirection() {
-    if (lastDragUpdateDetails == null) return DragDirection.down;
-    return lastDragUpdateDetails!.delta.dy > 0
-        ? DragDirection.down
-        : DragDirection.up;
+    if (lastDragUpdates.isEmpty) return DragDirection.down;
+    final lastUpdates = lastDragUpdates.take(4).toList();
+    final downCount = lastUpdates.where((update) => update.delta.dy > 0).length;
+    final upCount = lastUpdates.where((update) => update.delta.dy < 0).length;
+
+    if (downCount > upCount) {
+      return DragDirection.down;
+    } else if (downCount < upCount) {
+      return DragDirection.up;
+    } else {
+      return lastUpdates.first.delta.dy > 0
+          ? DragDirection.down
+          : DragDirection.up;
+    }
   }
 
   bool _isFlicked() {
-    return lastDragUpdateDetails != null &&
-        lastDragUpdateDetails!.delta.dy.abs() > 5;
+    if (lastDragUpdates.isEmpty) return false;
+    final lastUpdates = lastDragUpdates.take(3).toList();
+    for (var element in lastUpdates) {
+      if (element.delta.dy.abs() > 5) return true;
+    }
+    return false;
   }
 
   double _getDistanceToSnappingPosition(SnappingPosition snappingPosition) {
