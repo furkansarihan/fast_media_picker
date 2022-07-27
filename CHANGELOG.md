@@ -1,4 +1,4 @@
-## 0.0.4
+## 0.0.5
 * minor improvement
 ## 0.0.3
 * readme update

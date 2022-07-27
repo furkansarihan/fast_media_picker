@@ -34,23 +34,15 @@ class AssetPreview extends StatelessWidget {
           cubit: cubit,
           asset: asset,
           thumbnailOption: getThumbnailOption(context),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          fit: getFit(asset),
+          width: asset.width.toDouble(),
+          height: asset.height.toDouble(),
+          fit: BoxFit.contain,
           placeholderColor: Colors.black,
           fromWidth: fromWidth,
           fromHeight: fromHeight,
         ),
       ),
     );
-  }
-
-  BoxFit getFit(AssetEntity asset) {
-    if (asset.width > asset.height) {
-      return BoxFit.fitHeight;
-    } else {
-      return BoxFit.fitWidth;
-    }
   }
 
   ThumbnailOption getThumbnailOption(BuildContext context) {
