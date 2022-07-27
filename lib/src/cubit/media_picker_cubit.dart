@@ -80,6 +80,15 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     snappingSheetController.snapToPosition(middle);
   }
 
+  void popSheet() {
+    SnappingPosition bottom = const SnappingPosition.factor(
+      positionFactor: -1,
+      grabbingContentOffset: GrabbingContentOffset.bottom,
+      snappingDuration: Duration(milliseconds: 1000),
+    );
+    snappingSheetController.snapToPosition(bottom);
+  }
+
   void changeNotify(MethodCall call) async {
     Map<dynamic, dynamic> arguments = call.arguments as Map<dynamic, dynamic>;
 
@@ -342,6 +351,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       if (selectedAssets.value!.contains(asset)) {
         selectedAssets.value =
             selectedAssets.value!.where((a) => a != asset).toList();
+        if (selectedAssets.value!.isEmpty) selectedAssets.value = null;
       } else {
         if (!canSelectAsset()) return;
         selectedAssets.value =
@@ -355,7 +365,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     return selectedAssets.value!.length < configs.pickLimit;
   }
 
-  done() => Navigator.of(context).maybePop(selectedAssets.value);
+  void done() => popSheet();
 
   bool _appSettingsOpened = false;
   void requestPermission() async {

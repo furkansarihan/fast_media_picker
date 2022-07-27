@@ -67,10 +67,10 @@ class Sheet extends StatelessWidget {
         context.read<MediaPickerCubit>().lastDragUpdates.insert(0, details);
       },
       onSheetMoved: (positionData) {
-        context.read<MediaPickerCubit>().currentSheetPosition.value =
-            positionData.pixels;
+        final cubit = context.read<MediaPickerCubit>();
+        cubit.currentSheetPosition.value = positionData.pixels;
         if (popStarted && positionData.pixels <= 0) {
-          Navigator.of(context).maybePop();
+          Navigator.of(context).maybePop(cubit.selectedAssets.value);
         }
       },
       getSnappingCalculator: ({
