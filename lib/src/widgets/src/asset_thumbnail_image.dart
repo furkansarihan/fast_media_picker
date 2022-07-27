@@ -52,6 +52,7 @@ class AssetThumbnailImage extends StatelessWidget {
         }
         cubit.addToCache(key, snapshot.data!);
 
+        // TODO: placeholder -> from cached
         return image(snapshot.data!);
       },
     );

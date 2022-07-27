@@ -54,7 +54,7 @@ class MediaGridBody extends StatelessWidget {
                       itemCount: assets.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: cubit.configs.crossAxisCount,
-                        childAspectRatio: 1,
+                        childAspectRatio: cubit.configs.childAspectRatio,
                         crossAxisSpacing: 1,
                         mainAxisSpacing: 1,
                       ),

@@ -7,6 +7,7 @@ class FastMediaPickerConfigs {
   final RequestType type;
   final int pickLimit;
   final int crossAxisCount;
+  final double childAspectRatio;
 
   final Widget emptyWidget;
   final Widget loadingWidget;
@@ -19,6 +20,7 @@ class FastMediaPickerConfigs {
     this.type = RequestType.image,
     this.pickLimit = 1,
     this.crossAxisCount = 4,
+    this.childAspectRatio = 1,
     this.emptyWidget = const DefaultEmptyBody(
       noMediaText: 'No Media',
     ),

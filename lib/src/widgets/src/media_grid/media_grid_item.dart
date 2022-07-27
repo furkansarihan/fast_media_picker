@@ -14,14 +14,17 @@ class MediaGridItem extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: context.read<MediaPickerCubit>().updatedAssets,
       builder: (context, List<AssetEntity>? updatedAssets, child) {
-        final asset = context.read<MediaPickerCubit>().assets.value![index];
-        final crossAxisCount =
-            context.read<MediaPickerCubit>().configs.crossAxisCount;
+        final cubit = context.read<MediaPickerCubit>();
+        final asset = cubit.assets.value![index];
+        final crossAxisCount = cubit.configs.crossAxisCount;
+        final childAspectRatio = cubit.configs.childAspectRatio;
         final size = MediaQuery.of(context).size.width - (crossAxisCount - 1);
+        final width = size / crossAxisCount;
+        final height = width / childAspectRatio;
         return AssetThumbnail(
           asset: asset,
-          width: size / crossAxisCount,
-          height: size / crossAxisCount,
+          width: width,
+          height: height,
         );
       },
     );

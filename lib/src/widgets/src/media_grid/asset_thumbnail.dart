@@ -68,7 +68,9 @@ class AssetThumbnail extends StatelessWidget {
   }
 
   BoxFit getFit(AssetEntity asset) {
-    if (asset.width > asset.height) {
+    final assetAspectRatio = asset.width / asset.height;
+    final widthAspectRatio = width / height;
+    if (assetAspectRatio > widthAspectRatio) {
       return BoxFit.fitHeight;
     } else {
       return BoxFit.fitWidth;
