@@ -1,6 +1,6 @@
 name: fast_media_picker
 description: Media picker based on Instagram's UI design.
-version: 0.0.7
+version: 0.0.8
 repository: https://github.com/furkansarihan/fast_media_picker
 
 environment:

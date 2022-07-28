@@ -1,3 +1,6 @@
+## 0.0.8
+* custom thumbnailOption for grid and preview
+* better default thumbnail size calculation
 ## 0.0.7
 * permission_handler -> 9.2.0
 ## 0.0.6
