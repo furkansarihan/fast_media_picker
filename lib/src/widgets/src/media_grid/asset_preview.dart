@@ -53,7 +53,7 @@ class AssetPreview extends StatelessWidget {
     }
     final maxSize = MediaQuery.of(context).size * 2;
     final aspectRatio = asset.width / asset.height;
-    final ratio = aspectRatio > 1
+    final ratio = aspectRatio < 1
         ? maxSize.width / asset.width
         : maxSize.height / asset.height;
     final width = asset.width * ratio;

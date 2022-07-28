@@ -85,7 +85,7 @@ class AssetThumbnail extends StatelessWidget {
     }
     final maxSize = Size(width, height) * 2;
     final aspectRatio = asset.width / asset.height;
-    final ratio = aspectRatio > 1
+    final ratio = aspectRatio < 1
         ? maxSize.width / asset.width
         : maxSize.height / asset.height;
     final w = asset.width * ratio;
