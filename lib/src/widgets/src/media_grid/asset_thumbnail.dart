@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dismissible_page/dismissible_page.dart';
@@ -47,9 +48,10 @@ class AssetThumbnail extends StatelessWidget {
               tag: asset.id,
               child: AssetThumbnailImage(
                 key: ValueKey('AssetThumbnailImage_${asset.id}'),
+                id: 'grid',
                 cubit: cubit,
                 asset: asset,
-                thumbnailOption: getThumbnailOption(context),
+                thumbnailOption: getThumbnailOption(cubit),
                 width: width,
                 height: width,
                 fit: getFit(asset),
@@ -77,14 +79,25 @@ class AssetThumbnail extends StatelessWidget {
     }
   }
 
-  ThumbnailOption getThumbnailOption(BuildContext context) {
+  ThumbnailOption getThumbnailOption(MediaPickerCubit cubit) {
+    if (cubit.configs.thumbnailOptionGrid != null) {
+      return cubit.configs.thumbnailOptionGrid!.call(asset);
+    }
+    final maxSize = Size(width, height) * 2;
+    final aspectRatio = asset.width / asset.height;
+    final ratio = aspectRatio > 1
+        ? maxSize.width / asset.width
+        : maxSize.height / asset.height;
+    final w = asset.width * ratio;
+    final h = asset.height * ratio;
+
     if (Platform.isAndroid) {
-      return const ThumbnailOption(
-        size: ThumbnailSize.square(200),
+      return ThumbnailOption(
+        size: ThumbnailSize(w.toInt(), h.toInt()),
       );
     }
     return ThumbnailOption.ios(
-      size: const ThumbnailSize.square(200),
+      size: ThumbnailSize(w.toInt(), h.toInt()),
       deliveryMode: DeliveryMode.opportunistic,
     );
   }

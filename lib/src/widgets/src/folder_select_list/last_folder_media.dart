@@ -27,6 +27,7 @@ class LastFolderMedia extends StatelessWidget {
         }
         return AssetThumbnailImage(
           cubit: context.read<MediaPickerCubit>(),
+          id: 'folder',
           asset: snap.data!.first,
           thumbnailOption: const ThumbnailOption(
             size: ThumbnailSize(36, 36),

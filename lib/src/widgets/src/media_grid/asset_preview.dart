@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dismissible_page/dismissible_page.dart';
@@ -8,12 +9,13 @@ import 'package:photo_manager/photo_manager.dart';
 import '../asset_thumbnail_image.dart';
 
 class AssetPreview extends StatelessWidget {
-  const AssetPreview(
-      {super.key,
-      required this.asset,
-      required this.cubit,
-      required this.fromWidth,
-      required this.fromHeight});
+  const AssetPreview({
+    super.key,
+    required this.asset,
+    required this.cubit,
+    required this.fromWidth,
+    required this.fromHeight,
+  });
   final MediaPickerCubit cubit;
   final AssetEntity asset;
   final double fromWidth;
@@ -31,6 +33,8 @@ class AssetPreview extends StatelessWidget {
         tag: asset.id,
         child: AssetThumbnailImage(
           key: ValueKey('AssetPreview_AssetThumbnailImage_${asset.id}'),
+          id: 'preview',
+          fromId: 'grid',
           cubit: cubit,
           asset: asset,
           thumbnailOption: getThumbnailOption(context),
@@ -38,16 +42,20 @@ class AssetPreview extends StatelessWidget {
           height: asset.height.toDouble(),
           fit: BoxFit.contain,
           placeholderColor: Colors.black,
-          fromWidth: fromWidth,
-          fromHeight: fromHeight,
         ),
       ),
     );
   }
 
   ThumbnailOption getThumbnailOption(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final ratio = size.width / asset.width;
+    if (cubit.configs.thumbnailOptionPreview != null) {
+      return cubit.configs.thumbnailOptionPreview!.call(asset);
+    }
+    final maxSize = MediaQuery.of(context).size * 2;
+    final aspectRatio = asset.width / asset.height;
+    final ratio = aspectRatio > 1
+        ? maxSize.width / asset.width
+        : maxSize.height / asset.height;
     final width = asset.width * ratio;
     final height = asset.height * ratio;
 

@@ -14,8 +14,8 @@ class AssetThumbnailImage extends StatelessWidget {
     required this.height,
     required this.fit,
     required this.placeholderColor,
-    this.fromWidth = 0,
-    this.fromHeight = 0,
+    required this.id,
+    this.fromId,
   }) : super(key: key);
   final MediaPickerCubit cubit;
   final AssetEntity asset;
@@ -24,12 +24,12 @@ class AssetThumbnailImage extends StatelessWidget {
   final double height;
   final BoxFit fit;
   final Color? placeholderColor;
-  final double fromWidth;
-  final double fromHeight;
+  final String id;
+  final String? fromId;
 
   @override
   Widget build(BuildContext context) {
-    String key = '${asset.id}_${asset.modifiedDateSecond}_${width}_$height';
+    String key = '${asset.id}_${asset.modifiedDateSecond}_$id';
     Uint8List? cached = cubit.getFromCache(key);
     if (cached != null) {
       return image(cached);
@@ -38,8 +38,7 @@ class AssetThumbnailImage extends StatelessWidget {
       future: asset.thumbnailDataWithOption(thumbnailOption),
       builder: (context, AsyncSnapshot<Uint8List?> snapshot) {
         if (!snapshot.hasData) {
-          String fromKey =
-              '${asset.id}_${asset.modifiedDateSecond}_${fromWidth}_$fromHeight';
+          String fromKey = '${asset.id}_${asset.modifiedDateSecond}_$fromId';
           Uint8List? fromCached = cubit.getFromCache(fromKey);
           if (fromCached != null) {
             return image(fromCached);

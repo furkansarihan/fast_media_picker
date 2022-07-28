@@ -8,6 +8,8 @@ class FastMediaPickerConfigs {
   final int pickLimit;
   final int crossAxisCount;
   final double childAspectRatio;
+  final ThumbnailOption Function(AssetEntity)? thumbnailOptionGrid;
+  final ThumbnailOption Function(AssetEntity)? thumbnailOptionPreview;
 
   final Widget emptyWidget;
   final Widget loadingWidget;
@@ -21,6 +23,8 @@ class FastMediaPickerConfigs {
     this.pickLimit = 1,
     this.crossAxisCount = 4,
     this.childAspectRatio = 1,
+    this.thumbnailOptionGrid,
+    this.thumbnailOptionPreview,
     this.emptyWidget = const DefaultEmptyBody(
       noMediaText: 'No Media',
     ),
