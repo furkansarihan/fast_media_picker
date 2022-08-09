@@ -1,4 +1,6 @@
 ## 0.0.8
+* photo_manager -> 2.2.0-dev.5
+## 0.0.8
 * custom thumbnailOption for grid and preview
 * better default thumbnail size calculation
 ## 0.0.7

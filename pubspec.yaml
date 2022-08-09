@@ -1,6 +1,6 @@
 name: fast_media_picker
 description: Media picker based on Instagram's UI design.
-version: 0.0.8
+version: 0.0.9
 repository: https://github.com/furkansarihan/fast_media_picker
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
-  photo_manager: ^2.2.0-dev.4
+  photo_manager: ^2.2.0-dev.5
   snapping_sheet_2: ^3.1.3
   permission_handler: ^9.2.0
   dismissible_page: ^0.7.3

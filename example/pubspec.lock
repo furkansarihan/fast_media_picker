@@ -84,7 +84,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.8"
+    version: "0.0.9"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -192,7 +192,7 @@ packages:
       name: photo_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0-dev.4"
+    version: "2.2.0-dev.5"
   plugin_platform_interface:
     dependency: transitive
     description:

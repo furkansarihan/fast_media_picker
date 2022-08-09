@@ -52,10 +52,11 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () async {
                   final result = await FastMediaPicker.pick(
                     _navigatorKey.currentContext!,
-                    configs: FastMediaPickerConfigs(
+                    configs: const FastMediaPickerConfigs(
                       type: RequestType.image,
                       pickLimit: 1,
-                      crossAxisCount: Platform.isAndroid ? 3 : 4,
+                      crossAxisCount: 4,
+                      childAspectRatio: 1,
                     ),
                   );
                   if (result == null) return;
@@ -66,6 +67,26 @@ class _MyAppState extends State<MyApp> {
                   );
                 },
                 child: const Text('Push picker - modal sheet'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final result = await FastMediaPicker.pick(
+                    _navigatorKey.currentContext!,
+                    configs: const FastMediaPickerConfigs(
+                      type: RequestType.image,
+                      pickLimit: 1,
+                      crossAxisCount: 3,
+                      childAspectRatio: 9 / 16,
+                    ),
+                  );
+                  if (result == null) return;
+                  _messangerKey.currentState!.showSnackBar(
+                    SnackBar(
+                      content: Text(result.toString()),
+                    ),
+                  );
+                },
+                child: const Text('Push picker - story sheet'),
               ),
             ],
           ),
