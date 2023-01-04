@@ -98,7 +98,7 @@ class Sheet extends StatelessWidget {
       grabbingHeight: 68,
       grabbing: const GrabbingWidget(),
       sheetBelow: SnappingSheetContent(
-        draggable: true,
+        draggable: (details) => true,
         sizeBehavior: SheetSizeStatic(
           size: deviceHeight - 128 - topPadding - grabbingHeigth - 32,
         ),
