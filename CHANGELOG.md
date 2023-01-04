@@ -1,4 +1,6 @@
-## 0.0.8
+## 0.0.10
+* photo_manager -> 2.5.2
+## 0.0.9
 * photo_manager -> 2.2.0-dev.5
 ## 0.0.8
 * custom thumbnailOption for grid and preview
