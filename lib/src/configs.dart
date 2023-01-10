@@ -18,8 +18,7 @@ class FastMediaPickerConfigs {
   final Widget limitedPermissionRowWidget;
 
   const FastMediaPickerConfigs({
-    // TODO: video support
-    this.type = RequestType.image,
+    this.type = RequestType.common,
     this.pickLimit = 1,
     this.crossAxisCount = 4,
     this.childAspectRatio = 1,

@@ -1,3 +1,5 @@
+## 0.0.11
+* video support
 ## 0.0.10
 * photo_manager -> 2.5.2
 ## 0.0.9

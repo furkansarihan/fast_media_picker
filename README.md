@@ -59,6 +59,3 @@ configs: FastMediaPickerConfigs(
     ),
 ),
 ```
-
-## TODO
-* [ ] Add support for video preview

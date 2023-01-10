@@ -58,6 +58,33 @@ class AssetThumbnail extends StatelessWidget {
                 placeholderColor: Colors.transparent,
               ),
             ),
+            if (asset.duration > 0)
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black54,
+                    ],
+                    stops: [0.0, 0.7, 1.0],
+                  ),
+                ),
+              ),
+            if (asset.duration > 0)
+              Positioned(
+                right: 4,
+                bottom: 4,
+                child: Text(
+                  Duration(seconds: asset.duration).toShortString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
             Positioned(
               right: 4,
               top: 4,
@@ -100,5 +127,19 @@ class AssetThumbnail extends StatelessWidget {
       size: ThumbnailSize(w.toInt(), h.toInt()),
       deliveryMode: DeliveryMode.opportunistic,
     );
+  }
+}
+
+extension DurationExtension on Duration {
+  String toShortString() {
+    int second = inSeconds % 60;
+    int minute = inMinutes % 60;
+    String seconds = '${second < 10 ? '0' : ''}$second';
+    String minutes = '${minute < 10 ? '0' : ''}$minute';
+    if (inMinutes < 60) {
+      return '$minutes:$seconds';
+    } else {
+      return '$inHours:$minutes:$seconds';
+    }
   }
 }

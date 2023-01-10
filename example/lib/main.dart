@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
                   final result = await FastMediaPicker.pick(
                     _navigatorKey.currentContext!,
                     configs: const FastMediaPickerConfigs(
-                      type: RequestType.image,
+                      type: RequestType.common,
                       pickLimit: 1,
                       crossAxisCount: 4,
                       childAspectRatio: 1,
@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
                   final result = await FastMediaPicker.pick(
                     _navigatorKey.currentContext!,
                     configs: const FastMediaPickerConfigs(
-                      type: RequestType.image,
+                      type: RequestType.common,
                       pickLimit: 1,
                       crossAxisCount: 3,
                       childAspectRatio: 9 / 16,
