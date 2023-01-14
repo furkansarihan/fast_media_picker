@@ -21,14 +21,12 @@ class MediaGrid extends StatelessWidget {
       return ValueListenableBuilder(
         valueListenable: context.read<MediaPickerCubit>().selectedFolder,
         builder: (context, AssetPathEntity? folder, _) {
-          return folder == null
-              ? const LoadingWidget()
-              : Column(
-                  children: [
-                    Expanded(child: MediaGridBody(folder: folder)),
-                    const DoneButtonPaddingAnimator(),
-                  ],
-                );
+          return Column(
+            children: [
+              Expanded(child: MediaGridBody(folder: folder)),
+              const DoneButtonPaddingAnimator(),
+            ],
+          );
         },
       );
     });

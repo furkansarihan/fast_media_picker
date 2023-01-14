@@ -236,16 +236,26 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   }
 
   _init() async {
-    PermissionStatus status;
     if (Platform.isAndroid) {
-      status = await Permission.storage.status;
+      Map<Permission, PermissionStatus> statuses = {};
+      statuses[Permission.storage] = await Permission.storage.status;
+      statuses[Permission.photos] = await Permission.photos.status;
+      statuses[Permission.videos] = await Permission.videos.status;
+
+      PermissionStatus status = PermissionStatus.denied;
+      if (statuses[Permission.photos]!.isGranted &&
+          statuses[Permission.videos]!.isGranted) {
+        status = PermissionStatus.granted;
+      } else if (statuses[Permission.storage]!.isGranted) {
+        status = PermissionStatus.granted;
+      }
+      _emitPermissionStatus(status);
+      _initAllFolders();
     } else {
       // TODO: ios 13 and below?
-      status = await Permission.photos.status;
+      _emitPermissionStatus(await Permission.photos.status);
+      _initAllFolders();
     }
-
-    _emitPermissionStatus(status);
-    _initAllFolders();
   }
 
   _emitPermissionStatus(PermissionStatus status) {
@@ -282,9 +292,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
     // TODO: only show folders with assets
     folders = List<AssetPathEntity>.from(paths);
-    // TODO: handle no folder
     if (folders!.isEmpty) {
-      assets.value = null;
+      assets.value = [];
       _foldersLoading = false;
       return;
     }
@@ -376,15 +385,27 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       _appSettingsOpened = true;
       return;
     }
-    PermissionStatus? status;
-    if (Platform.isAndroid) {
-      status = await Permission.storage.request();
-    } else {
-      status = await Permission.photos.request();
-    }
 
-    _emitPermissionStatus(status);
-    _initAllFolders();
+    if (Platform.isAndroid) {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage,
+        Permission.photos,
+        Permission.videos,
+      ].request();
+
+      PermissionStatus status = PermissionStatus.denied;
+      if (statuses[Permission.photos]!.isGranted &&
+          statuses[Permission.videos]!.isGranted) {
+        status = PermissionStatus.granted;
+      } else if (statuses[Permission.storage]!.isGranted) {
+        status = PermissionStatus.granted;
+      }
+      _emitPermissionStatus(status);
+      _initAllFolders();
+    } else {
+      _emitPermissionStatus(await Permission.photos.request());
+      _initAllFolders();
+    }
   }
 
   void refreshPermission() {

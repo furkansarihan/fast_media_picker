@@ -1,4 +1,6 @@
-## 0.0.11
+## 0.0.13
+* fix android 13
+## 0.0.12
 * video support
 ## 0.0.10
 * photo_manager -> 2.5.2
